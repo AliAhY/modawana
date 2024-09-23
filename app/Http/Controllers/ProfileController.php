@@ -68,7 +68,8 @@ class ProfileController extends Controller
         $user_name = $user->name; // احصل على اسم المستخدم  
 
         // upload image  
-        $userDirectory = "public/media/users/profile/$user_name";
+
+        $userDirectory = "public/media/users/$user_name/images/profile";
 
         // تحقق من وجود المجلد، إذا لم يكن موجودًا قم بإنشائه  
         if (!Storage::exists($userDirectory)) {
@@ -79,7 +80,7 @@ class ProfileController extends Controller
         $file = $request->file('image');
 
         // قم بتحديد اسم الملف  
-        $filename = time() . '.' . $file->getClientOriginalExtension();
+        $filename = $filename = $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
 
         // قم بتخزين الصورة في المجلد الخاص بالمستخدم  
         $file->storeAs($userDirectory, $filename);
@@ -98,15 +99,15 @@ class ProfileController extends Controller
             return response()->json(['error' => 'User not found'], 404);
         }
 
-        if (!$request->hasFile('image')) {
+        if (!$request->hasFile('cover_image')) {
             return response()->json(['error' => 'Image not provided'], 400);
         }
 
         $user_name = $user->name; // احصل على اسم المستخدم  
 
         // upload image  
-        $userDirectory = "public/media/users/cover/$user_name";
-
+        // $userDirectory = "public/media/users/cover/$user_name";
+        $userDirectory = "public/media/users/$user_name/images/cover";
         // تحقق من وجود المجلد، إذا لم يكن موجودًا قم بإنشائه  
         if (!Storage::exists($userDirectory)) {
             Storage::makeDirectory($userDirectory);

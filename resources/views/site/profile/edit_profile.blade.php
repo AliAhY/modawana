@@ -13,12 +13,6 @@
             margin-bottom: 20px;
         }
 
-        .profile-photo {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            margin-bottom: 15px;
-        }
 
         .form-group {
             margin: 10px;
@@ -28,6 +22,41 @@
         .text-center {
             margin-top: 20px;
             /* إضافة مسافة لتحسين الشكل */
+        }
+
+        #profile-preview {
+            display: flex;
+            justify-content: center;
+            /* تمركز أفقي */
+            align-items: center;
+            /* تمركز عمودي إذا لزم الأمر */
+            margin-bottom: 15px;
+            /* إضافة مساحة تحت الصورة */
+        }
+
+        .profile-photo {
+            width: 300px;
+            /* عرض ثابت */
+            height: 300px;
+            /* طول ثابت */
+            border-radius: 50%;
+            /* دائري */
+            object-fit: cover;
+            /* يضمن أن الصورة تغطي المساحة */
+            margin-bottom: 15px;
+        }
+
+        .cover-photo {
+            width: 100%;
+            /* عرض الغلاف */
+            height: auto;
+            /* ارتفاع تلقائي */
+            border-radius: 15px;
+            /* زوايا مستديرة */
+            margin-bottom: 20px;
+            /* مسافة أسفل الصورة */
+            object-fit: cover;
+            /* يضمن أن الصورة تغطي المساحة */
         }
     </style>
 
@@ -42,18 +71,23 @@
         <!-- بطاقة صورة البروفايل -->
         <div class="card mb-4">
             <div class="card-body text-center">
-                <img src="https://via.placeholder.com/150" class="profile-photo rounded-circle" alt="Profile Photo">
+                <div id="profile-preview">
+                    <img src="https://via.placeholder.com/300x300" class="profile-photo rounded-circle" alt="Profile Photo">
+                </div>
                 <h6 class="mt-2">رفع صورة مختلفة...</h6>
                 <input type="file" class="form-control mb-3" name="image" id="image" required>
             </div>
         </div>
-
         <!-- بطاقة صورة الغلاف -->
         <div class="card mb-4">
             <div class="card-body text-center">
-                <img src="https://via.placeholder.com/1352x300" class="cover-photo" alt="Cover Photo">
+                <div id="cover-preview">
+                    <img src="https://via.placeholder.com/1352x300" class="cover-photo" alt="Cover Photo"
+                        style="max-width: 100%; height: auto;">
+                </div>
                 <h6 class="mt-2">رفع صورة مختلفة...</h6>
-                <input type="file" class="form-control mb-3" name="cover_image" id="cover_image" required>
+                <input type="file" class="form-control mb-3" name="cover_image" id="cover_image" accept="image/*"
+                    required>
             </div>
         </div>
 
@@ -167,10 +201,11 @@
     </div>
 
     <script>
-        const userId = {{ $user_profile->id }}; // تأكد من أن قيمته صحيحة  
+        const userId = {{ $user_profile->id }}; 
+        // إعدادات لرفع صورة الملف الشخصي  
         const inputElement = document.querySelector('input[id="image"]');
         const pond = FilePond.create(inputElement);
-        FilePond.setOptions({
+        pond.setOptions({
             server: {
                 url: '{{ route('upload.profile', ['id' => ':id']) }}'.replace(':id', userId),
                 headers: {
@@ -178,19 +213,58 @@
                 }
             }
         });
-    </script>
 
-    <script>
-        const userId1 = {{ $user_profile->id }}; // تأكد من أن قيمته صحيحة
+        pond.on('addfile', (error, file) => {
+            if (error) {
+                console.error('Error adding file:', error);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const coverPreviewImg = document.querySelector('#profile-preview img');
+
+                // تحديث مصدر الصورة  
+                coverPreviewImg.src = e.target.result; // تعيين مصدر الصورة  
+                coverPreviewImg.style.display = "block"; // إظهار صورة المعاينة بعد رفعها  
+            };
+            reader.readAsDataURL(file.file); // قراءة الملف كـ Data URL  
+        });
+
+        // إعدادات لرفع صورة الغلاف  
         const inputElement1 = document.querySelector('input[id="cover_image"]');
         const pond1 = FilePond.create(inputElement1);
-        FilePond.setOptions({
+        pond1.setOptions({
             server: {
-                url: '{{ route('upload.cover', ['id' => ':id']) }}'.replace(':id', userId1),
+                url: '{{ route('upload.cover', ['id' => ':id']) }}'.replace(':id', userId),
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
             }
+        });
+
+        pond1.on('addfile', (error, file) => {
+            if (error) {
+                console.error('Error adding file:', error);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const coverPreviewImg = document.querySelector('#cover-preview img');
+
+                // تحديث مصدر الصورة  
+                coverPreviewImg.src = e.target.result; // تعيين مصدر الصورة  
+                coverPreviewImg.style.display = "block"; // إظهار صورة المعاينة بعد رفعها  
+
+                // تعيين الخصائص المطلوبة مباشرة  
+                // التأكد من أن الصورة تتناسب مع مظهر الصورة الافتراضية   
+                coverPreviewImg.style.width = "100%"; // عرض 100%  
+                coverPreviewImg.style.height = "auto"; // ارتفاع تلقائي  
+                coverPreviewImg.style.borderRadius = "15px"; // زوايا دائرية  
+                coverPreviewImg.style.objectFit = "cover"; // تأكد من تغطية المساحة   
+            };
+            reader.readAsDataURL(file.file); // قراءة الملف كـ Data URL  
         });
     </script>
 @endsection
