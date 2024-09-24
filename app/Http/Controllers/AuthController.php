@@ -33,6 +33,11 @@ class AuthController extends Controller
             'remember_token' => Str::random(60),
         ]);
 
+        $user->profile()->create([
+            'name' => $request->username,
+            'email' => $request->email, 
+        ]);
+
         // تجديد الجلسة  
         session()->regenerate();
 

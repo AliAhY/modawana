@@ -9,4 +9,10 @@ class Profile extends Model
 {
     use HasFactory;
     public $guarded = [];
+    
+    // العلاقة مع نموذج User  
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

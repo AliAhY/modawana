@@ -22,9 +22,10 @@ class CreateProfilesTable extends Migration
             $table->enum('gender', ['male', 'female'])->nullable();
             $table->string('phone_number')->nullable();
             $table->string('professional_title')->nullable();
-            $table->json('skills')->nullable();
-            $table->json('interests')->nullable();
+            $table->text('skills')->nullable();
+            $table->text('interests')->nullable();
             $table->string('website')->nullable();
+            $table->string('email')->nullable();
             $table->timestamps();
         });
     }

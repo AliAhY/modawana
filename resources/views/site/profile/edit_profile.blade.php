@@ -1,5 +1,6 @@
 @extends('site.layouts.layout')
 @section('main')
+
     <style>
         .card {
             margin-bottom: 15px;
@@ -60,148 +61,167 @@
         }
     </style>
 
+    @if ($errors->any())
+        @foreach ($errors->all() as $error)
+            <p style="color: red;font-size: 28px">{{ $error }}</p>
+        @endforeach
+    @endif
+
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="container">
         <h1 class="text-primary">Edit Profile</h1>
         <hr>
 
         <!-- نموذج رفع الصورة -->
-        {{-- <form action="{{ route('update.profile', $id) }}" method="POST" enctype="multipart/form-data"> --}}
-        @csrf <!-- إذا كنت تستخدم Laravel، تأكد من إضافة مدير الحماية CSRF -->
-
-        <!-- بطاقة صورة البروفايل -->
-        <div class="card mb-4">
-            <div class="card-body text-center">
-                <div id="profile-preview">
-                    <img src="https://via.placeholder.com/300x300" class="profile-photo rounded-circle" alt="Profile Photo">
+        <form action="{{ route('update.profile', $user_profile->id) }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
+            <!-- بطاقة صورة البروفايل -->
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <div id="profile-preview">
+                        <img src="https://via.placeholder.com/300x300" class="profile-photo rounded-circle"
+                            alt="Profile Photo">
+                    </div>
+                    <h6 class="mt-2">رفع صورة مختلفة...</h6>
+                    <input type="file" class="form-control mb-3" name="image" id="image">
                 </div>
-                <h6 class="mt-2">رفع صورة مختلفة...</h6>
-                <input type="file" class="form-control mb-3" name="image" id="image" required>
             </div>
-        </div>
-        <!-- بطاقة صورة الغلاف -->
-        <div class="card mb-4">
-            <div class="card-body text-center">
-                <div id="cover-preview">
-                    <img src="https://via.placeholder.com/1352x300" class="cover-photo" alt="Cover Photo"
-                        style="max-width: 100%; height: auto;">
-                </div>
-                <h6 class="mt-2">رفع صورة مختلفة...</h6>
-                <input type="file" class="form-control mb-3" name="cover_image" id="cover_image" accept="image/*"
-                    required>
-            </div>
-        </div>
-
-        <div class="row">
-            <!-- حقول النموذج -->
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label>Full name:</label>
-                            <input class="form-control" type="text" name="name" value="dey-dey" required>
-                        </div>
+            <!-- بطاقة صورة الغلاف -->
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <div id="cover-preview">
+                        <img src="https://via.placeholder.com/1352x300" class="cover-photo" alt="Cover Photo"
+                            style="max-width: 100%; height: auto;">
                     </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label>Bio:</label>
-                            <textarea class="form-control" name="bio"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label>Skills:</label>
-                            <input class="form-control" type="text" name="skills" value="">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label>School name:</label>
-                            <input class="form-control" type="text" name="school_name" value="">
-                        </div>
-                    </div>
+                    <h6 class="mt-2">رفع صورة مختلفة...</h6>
+                    <input type="file" class="form-control mb-3" name="cover_image" id="cover_image" accept="image/*">
                 </div>
             </div>
 
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label>Professional title:</label>
-                            <input class="form-control" type="text" name="professional_title" value="dey-dey">
+            <div class="row">
+                <!-- حقول النموذج -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Full name:</label>
+                                <input class="form-control" type="text" name="name" value="dey-dey">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Email:</label>
+                                <input class="form-control" type="text" name="email" value="dey-dey">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Bio:</label>
+                                <textarea class="form-control" name="bio"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Skills:</label>
+                                <input class="form-control" type="text" name="skills" value="">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>School name:</label>
+                                <input class="form-control" type="text" name="school_name" value="">
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="card">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label>Date of birth:</label>
-                            <input class="form-control" type="date" name="date_of_birth">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Professional title:</label>
+                                <input class="form-control" type="text" name="professional_title" value="dey-dey">
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="card">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label>Interests:</label>
-                            <input class="form-control" type="text" name="interests" value="">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Date of birth:</label>
+                                <input class="form-control" type="date" name="date_of_birth">
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="card">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label>Location:</label>
-                            <input class="form-control" type="text" name="location" value="">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Interests:</label>
+                                <input class="form-control" type="text" name="interests" value="">
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="row mt-3">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label>Universe name:</label>
-                            <input class="form-control" type="text" name="universe_name" value="">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Location:</label>
+                                <input class="form-control" type="text" name="location" value="">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label>Phone Number:</label>
-                            <input class="form-control" type="number" name="phone_number" value="">
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Universe name:</label>
+                                <input class="form-control" type="text" name="universe_name" value="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Phone Number:</label>
+                                <input class="form-control" type="number" name="phone_number" value="">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="text-center">
-            <button type="submit" class="btn btn-primary">حفظ التغييرات</button> <!-- زر إرسال -->
-        </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">حفظ التغييرات</button> <!-- زر إرسال -->
+            </div>
         </form>
     </div>
 
     <script>
-        const userId = {{ $user_profile->id }}; 
+        const userId = {{ $user_profile->id }};
         // إعدادات لرفع صورة الملف الشخصي  
         const inputElement = document.querySelector('input[id="image"]');
         const pond = FilePond.create(inputElement);

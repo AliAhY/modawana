@@ -35,5 +35,6 @@ Route::get('/profile/{id}', [ProfileController::class, 'profile'])->name('user.p
 Route::get('/edit_profile_form/{id}', [ProfileController::class, 'edit_profile_form'])->name('user.edit_profile_form');
 Route::post('/upload/profile/{id}', [ProfileController::class, 'upload_profile_photo'])->name('upload.profile'); 
 Route::post('/upload/profile_cover/{id}', [ProfileController::class, 'upload_profile_cover'])->name('upload.cover'); 
+Route::put('/update_profile/{id}', [ProfileController::class, 'update_profile'])->name('update.profile'); 
 
 

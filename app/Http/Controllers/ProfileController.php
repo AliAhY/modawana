@@ -22,32 +22,47 @@ class ProfileController extends Controller
     public function edit_profile_form($id)
     {
         $user_profile = Profile::findOrFail($id);
-        $user_name = User::findOrFail($id);
-
         return view('site.profile.edit_profile', compact('user_profile'));
     }
 
 
     public function update_profile(Request $request, string $id)
     {
+        // dd($request->all());
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'bio' => 'nullable|string',
+            'location' => 'nullable|string',
+            'skills' => 'nullable|string',
+            'professional_title' => 'nullable|string',
+            'date_of_birth' => 'nullable|date',
+            'interests' => 'nullable|string',
+            'school_name' => 'nullable|string',
+            'phone_number' => 'nullable|string',
+            'image' => 'nullable|max:10000',  
+            'cover_image' => 'nullable|max:10000',
+        ]);
+
+
 
         try {
-            $profile = Profile::findOrFail($id);
-            $profile->update([
-                'name' => $request->name,
-                'bio' => $request->bio,
-                'location' => $request->location,
-                'skills' => $request->skills,
-                'professional_title' => $request->professional_title,
-                'date_of_birth' => $request->date_of_birth,
-                'interests' => $request->interests,
-                'school_name' => $request->school_name,
-                'phone_number' => $request->phone_number,
-                'interests' => $request->interests,
-                'image' => $request->image,
-            ]);
+        $profile = Profile::findOrFail($id);
+        $profile->update([
+            'name' => $request->name,
+            'bio' => $request->bio,
+            'location' => $request->location,
+            'skills' => $request->skills,
+            'professional_title' => $request->professional_title,
+            'date_of_birth' => $request->date_of_birth,
+            'school_name' => $request->school_name,
+            'phone_number' => $request->phone_number,
+            'interests' => $request->interests,
+            'avatar' => $request->image,
+            'cover_image' => $request->cover_image,
+            'email' => $request->email,
+        ]);
 
-            return redirect()->route('user.profile')->with('success', 'The Book has been updated successfully');
+        return redirect()->route('user.edit_profile_form', $profile->id)->with('success', 'The profile has been updated successfully');
         } catch (Exception $e) {
             return back()->withErrors(['error' => 'Something happened']);
         }
@@ -87,8 +102,6 @@ class ProfileController extends Controller
 
         return response()->json(['filename' => $filename], 200);
     }
-
-
 
 
     public function upload_profile_cover(Request $request, $id)
