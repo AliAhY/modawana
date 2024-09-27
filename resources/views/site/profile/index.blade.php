@@ -1,16 +1,7 @@
 @extends('site.layouts.layout')
 @section('main')
-    {{-- <!DOCTYPE html> --}}
-    {{-- <html lang="en"> --}}
-
-    {{-- <head> --}}
-    <meta charset="utf-8">
-
-
-    {{-- <title>profile with photos and posts - Bootdey.com</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1"> --}}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <style type="text/css">
         body {
             padding-top: 20px;
@@ -136,27 +127,42 @@
         .ms-7 {
             margin-left: 30px !important;
         }
+
+        .cover-image {
+            width: 100%;
+            /* يضمن أن الصورة تأخذ العرض الكامل للكارد */
+            height: 300px;
+            /* ارتفاع ثابت */
+            object-fit: cover;
+            /* الصورة ستغطي العنصر بالكامل */
+        }
     </style>
-    {{-- </head> --}}
+    </head>
 
     <body>
-
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <p style="color: red;font-size: 28px">{{ $error }}</p>
-            @endforeach
-        @endif
-
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
         <div class="container">
             <div class="card overflow-hidden">
                 <div class="card-body p-0">
-                    <img src="https://www.bootdey.com/image/1352x300/FF7F50/000000" alt class="img-fluid">
+                    {{-- <img src="https://www.bootdey.com/image/1352x300/FF7F50/000000" alt class="img-fluid"> --}}
+
+                    @if ($user_name->profile->cover_image == null)
+                        <img src="https://www.bootdey.com/image/1352x300/FF7F50/000000" alt class="img-fluid cover-image">
+                    @else
+                        @php
+                            // تحليل قيمة avatar (JSON) لاسترداد اسم الملف
+                            $cover_imageData = json_decode($user_name->profile->cover_image);
+                            $filename = $cover_imageData->filename ?? null; // التأكد من وجود البيانات
+                        @endphp
+
+                        @if ($filename)
+                            <img src="{{ url('/storage/media/users/' . $user_name->profile->name . '/images/cover/' . $filename) }}"
+                                alt="Cover Photo" class="img-fluid">
+                        @else
+                            <img src="https://www.bootdey.com/image/1352x300/FF7F50/000000" alt
+                                class="img-fluid cover-image">
+                        @endif
+                    @endif
                     <div class="row align-items-center">
                         <div class="col-lg-4 order-lg-1 order-2">
                             <div class="d-flex align-items-center justify-content-around m-4">
@@ -184,14 +190,27 @@
                                         style="width: 110px; height: 110px;" ;>
                                         <div class="border border-4 border-white d-flex align-items-center justify-content-center rounded-circle overflow-hidden"
                                             style="width: 100px; height: 100px;" ;>
-                                            <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt
-                                                class="w-100 h-100">
+
+                                            @if ($user_name->profile->avatar == null)
+                                                <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt
+                                                    class="w-100 h-100">
+                                            @else
+                                                @php
+                                                    // تحليل قيمة avatar (JSON) لاسترداد اسم الملف
+                                                    $avatarData = json_decode($user_name->profile->avatar);
+                                                    $filename = $avatarData->filename ?? null; // التأكد من وجود البيانات
+                                                @endphp
+
+                                                {{-- @if ($filename) --}}
+                                                <img src="{{ url('/storage/media/users/' . $user_name->profile->name . '/images/profile/' . $filename) }}"
+                                                    alt="Avatar Photo" class="w-100 h-100">
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
                                 <div class="text-center">
-                                    <h5 class="fs-5 mb-0 fw-semibold">{{ $user_name->name }}</h5>
-                                    <p class="mb-0 fs-4"></p>
+                                    <h5 class="fs-5 mb-0 fw-semibold">{{ $user_name->profile->name }}</h5>
+                                    <p class="mb-0 fs-4">Designer</p>
                                 </div>
                             </div>
                         </div>
@@ -222,8 +241,9 @@
                                         <i class="fa fa-youtube"></i>
                                     </a>
                                 </li>
-                                <li><a href="{{ route('user.edit_profile_form', $user_name->id) }}"><button
+                                <li><a href="{{ route('user.edit_profile_form', $user_name->profile->id) }}"><button
                                             class="btn btn-primary">Edit Profile</button></a></li>
+
                             </ul>
                         </div>
                     </div>
@@ -273,7 +293,8 @@
                             <div class="card shadow-none border">
                                 <div class="card-body">
                                     <h4 class="fw-semibold mb-3">Introduction</h4>
-                                    <p>{{ $user_profile->bio }}.</p>
+                                    <p>Hello, I am Mathew Anderson. I love making websites and graphics. Lorem ipsum dolor
+                                        sit amet, consectetur adipiscing elit.</p>
                                     <ul class="list-unstyled mb-0">
                                         <li class="d-flex align-items-center gap-3 mb-4">
                                             <i class="fa fa-briefcase text-dark fs-6"></i>
@@ -372,8 +393,8 @@
                                             class="rounded-circle" width="40" height="40">
                                         <h6 class="fw-semibold mb-0 fs-4">Mathew Anderson</h6>
                                         <span class="fs-2"><span
-                                                class="p-1 bg-light rounded-circle d-inline-block"></span> 15 min
-                                            ago</span>
+                                                class="p-1 bg-light rounded-circle d-inline-block"></span>
+                                            15 min ago</span>
                                     </div>
                                     <p class="text-dark my-3">
                                         Nu kek vuzkibsu mooruno ejepogojo uzjon gag fa ezik disan he nah. Wij wo pevhij
@@ -415,7 +436,8 @@
                                                     ago</span>
                                             </div>
                                             <p class="my-3">Lufo zizrap iwofapsuk pusar luc jodawbac zi op uvezojroj
-                                                duwage vuhzoc ja vawdud le furhez siva
+                                                duwage
+                                                vuhzoc ja vawdud le furhez siva
                                                 fikavu ineloh. Zot afokoge si mucuve hoikpaf adzuk zileuda falohfek zoije
                                                 fuka udune lub annajor gazo
                                                 conis sufur gu.
@@ -495,11 +517,6 @@
                                 <div class="d-flex align-items-center gap-3 p-3">
                                     <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt
                                         class="rounded-circle" width="33" height="33">
-
-
-                                    {{-- لهون وصلت باقي انسخلو من هون لتحت --}}
-
-
                                     <input type="text" class="form-control py-8" id="exampleInputtext"
                                         aria-describedby="textHelp" placeholder="Comment">
                                     <button class="btn btn-primary">Comment</button>
@@ -512,7 +529,8 @@
                                             class="rounded-circle" width="40" height="40">
                                         <h6 class="fw-semibold mb-0 fs-4">Carry Minati</h6>
                                         <span class="fs-2"><span
-                                                class="p-1 bg-light rounded-circle d-inline-block"></span> now</span>
+                                                class="p-1 bg-light rounded-circle d-inline-block"></span>
+                                            now</span>
                                     </div>
                                     <p class="text-dark my-3">
                                         Pucnus taw set babu lasufot lawdebuw nem ig bopnub notavfe pe ranlu dijsan liwfekaj
@@ -559,8 +577,8 @@
                                             class="rounded-circle" width="40" height="40">
                                         <h6 class="fw-semibold mb-0 fs-4">Genelia Desouza</h6>
                                         <span class="fs-2"><span
-                                                class="p-1 bg-light rounded-circle d-inline-block"></span> 15 min
-                                            ago</span>
+                                                class="p-1 bg-light rounded-circle d-inline-block"></span>
+                                            15 min ago</span>
                                     </div>
                                     <p class="text-dark my-3">
                                         Faco kiswuoti mucurvi juokomo fobgi aze huweik zazjofefa kuujer talmoc li niczot
@@ -649,8 +667,8 @@
                                             class="rounded-circle" width="40" height="40">
                                         <h6 class="fw-semibold mb-0 fs-4">Mathew Anderson</h6>
                                         <span class="fs-2"><span
-                                                class="p-1 bg-light rounded-circle d-inline-block"></span> 15 min
-                                            ago</span>
+                                                class="p-1 bg-light rounded-circle d-inline-block"></span>
+                                            15 min ago</span>
                                     </div>
                                     <p class="text-dark my-3">
                                         Faco kiswuoti mucurvi juokomo fobgi aze huweik zazjofefa kuujer talmoc li niczot

@@ -9,7 +9,7 @@
 
         .cover-photo {
             width: 100%;
-            height: auto;
+            height: 500px;
             border-radius: 15px;
             margin-bottom: 20px;
         }
@@ -36,9 +36,9 @@
         }
 
         .profile-photo {
-            width: 300px;
+            width: 250px;
             /* عرض ثابت */
-            height: 300px;
+            height: 250px;
             /* طول ثابت */
             border-radius: 50%;
             /* دائري */
@@ -49,11 +49,8 @@
 
         .cover-photo {
             width: 100%;
-            /* عرض الغلاف */
-            height: auto;
-            /* ارتفاع تلقائي */
+            height: 500px;
             border-radius: 15px;
-            /* زوايا مستديرة */
             margin-bottom: 20px;
             /* مسافة أسفل الصورة */
             object-fit: cover;
@@ -84,8 +81,24 @@
             <div class="card mb-4">
                 <div class="card-body text-center">
                     <div id="profile-preview">
-                        <img src="https://via.placeholder.com/300x300" class="profile-photo rounded-circle"
-                            alt="Profile Photo">
+                        @if ($user_profile->avatar == null)
+                            <img src="https://via.placeholder.com/300x300" class="profile-photo rounded-circle"
+                                alt="Profile Photo">
+                        @else
+                            @php
+                                // تحليل قيمة avatar (JSON) لاسترداد اسم الملف
+                                $avatarData = json_decode($user_profile->avatar);
+                                $filename = $avatarData->filename ?? null; // التأكد من وجود البيانات
+                            @endphp
+
+                            @if ($filename)
+                                <img src="{{ url('/storage/media/users/' . $user_profile->name . '/images/profile/' . $filename) }}"
+                                    class="profile-photo" alt="Profile Photo">
+                            @else
+                                <img src="{{ asset('images/300x300.png') }}" class="profile-photo rounded-circle" 
+                                    alt="Profile Photo">
+                            @endif
+                        @endif
                     </div>
                     <h6 class="mt-2">رفع صورة مختلفة...</h6>
                     <input type="file" class="form-control mb-3" name="image" id="image">
@@ -95,11 +108,27 @@
             <div class="card mb-4">
                 <div class="card-body text-center">
                     <div id="cover-preview">
-                        <img src="https://via.placeholder.com/1352x300" class="cover-photo" alt="Cover Photo"
-                            style="max-width: 100%; height: auto;">
+                        @if ($user_profile->cover_image == null)
+                            <img src="https://via.placeholder.com/300x300" class="cover-photo"
+                                alt="Profile Photo">
+                        @else
+                            @php
+                                // تحليل قيمة avatar (JSON) لاسترداد اسم الملف
+                                $cover_imageData = json_decode($user_profile->cover_image);
+                                $filename = $cover_imageData->filename ?? null; // التأكد من وجود البيانات
+                            @endphp
+
+                            @if ($filename)
+                                <img src="{{ url('/storage/media/users/' . $user_profile->name . '/images/cover/' . $filename) }}"
+                                    class="cover-photo" alt="Profile Photo">
+                            @else
+                                <img src="https://via.placeholder.com/300x300" class="cover-photo"
+                                    alt="Profile Photo">
+                            @endif
+                        @endif
                     </div>
                     <h6 class="mt-2">رفع صورة مختلفة...</h6>
-                    <input type="file" class="form-control mb-3" name="cover_image" id="cover_image" accept="image/*">
+                    <input type="file" class="form-control mb-3" name="cover_image" id="cover_image">
                 </div>
             </div>
 
@@ -110,7 +139,7 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label>Full name:</label>
-                                <input class="form-control" type="text" name="name" value="dey-dey">
+                                <input class="form-control" type="text" name="name" value="{{ $user_profile->name }}">
                             </div>
                         </div>
                     </div>
@@ -118,7 +147,8 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label>Email:</label>
-                                <input class="form-control" type="text" name="email" value="dey-dey">
+                                <input class="form-control" type="text" name="email"
+                                    value="{{ $user_profile->email }}">
                             </div>
                         </div>
                     </div>
@@ -127,7 +157,7 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label>Bio:</label>
-                                <textarea class="form-control" name="bio"></textarea>
+                                <textarea class="form-control" name="bio">{{ $user_profile->bio }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -136,7 +166,8 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label>Skills:</label>
-                                <input class="form-control" type="text" name="skills" value="">
+                                <input class="form-control" type="text" name="skills"
+                                    value="{{ $user_profile->skills }}">
                             </div>
                         </div>
                     </div>
@@ -145,7 +176,8 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label>School name:</label>
-                                <input class="form-control" type="text" name="school_name" value="">
+                                <input class="form-control" type="text" name="school_name"
+                                    value="{{ $user_profile->school_name }}">
                             </div>
                         </div>
                     </div>
@@ -156,7 +188,8 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label>Professional title:</label>
-                                <input class="form-control" type="text" name="professional_title" value="dey-dey">
+                                <input class="form-control" type="text" name="professional_title"
+                                    value="{{ $user_profile->professional_title }}">
                             </div>
                         </div>
                     </div>
@@ -165,7 +198,8 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label>Date of birth:</label>
-                                <input class="form-control" type="date" name="date_of_birth">
+                                <input class="form-control" type="date" name="date_of_birth"
+                                    value="{{ $user_profile->date_of_birth }}">
                             </div>
                         </div>
                     </div>
@@ -174,7 +208,8 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label>Interests:</label>
-                                <input class="form-control" type="text" name="interests" value="">
+                                <input class="form-control" type="text" name="interests"
+                                    value="{{ $user_profile->interests }}">
                             </div>
                         </div>
                     </div>
@@ -183,7 +218,8 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label>Location:</label>
-                                <input class="form-control" type="text" name="location" value="">
+                                <input class="form-control" type="text" name="location"
+                                    value="{{ $user_profile->location }}">
                             </div>
                         </div>
                     </div>
@@ -196,7 +232,8 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label>Universe name:</label>
-                                <input class="form-control" type="text" name="universe_name" value="">
+                                <input class="form-control" type="text" name="universe_name"
+                                    value="{{ $user_profile->universe_name }}">
                             </div>
                         </div>
                     </div>
@@ -207,7 +244,8 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label>Phone Number:</label>
-                                <input class="form-control" type="number" name="phone_number" value="">
+                                <input class="form-control" type="number" name="phone_number"
+                                    value="{{ $user_profile->phone_number }}">
                             </div>
                         </div>
                     </div>
@@ -215,7 +253,7 @@
             </div>
 
             <div class="text-center">
-                <button type="submit" class="btn btn-primary">حفظ التغييرات</button> <!-- زر إرسال -->
+                <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
             </div>
         </form>
     </div>
@@ -280,7 +318,7 @@
                 // تعيين الخصائص المطلوبة مباشرة  
                 // التأكد من أن الصورة تتناسب مع مظهر الصورة الافتراضية   
                 coverPreviewImg.style.width = "100%"; // عرض 100%  
-                coverPreviewImg.style.height = "auto"; // ارتفاع تلقائي  
+                coverPreviewImg.style.height = "500px"; // ارتفاع تلقائي  
                 coverPreviewImg.style.borderRadius = "15px"; // زوايا دائرية  
                 coverPreviewImg.style.objectFit = "cover"; // تأكد من تغطية المساحة   
             };
