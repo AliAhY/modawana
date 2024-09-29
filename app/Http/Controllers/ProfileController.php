@@ -14,6 +14,9 @@ class ProfileController extends Controller
     public function profile($id)
     {
         $user_name = User::where('id', $id)->with('profile')->first();
+        // $profile_inf = Profile::where('id', $id)->with('user')->first(); 
+        // return $user_name;
+        // return view('site.profile.index', compact('user_name','profile_inf'));
         return view('site.profile.index', compact('user_name'));
     }
 
@@ -72,77 +75,6 @@ class ProfileController extends Controller
             return back()->withErrors(['error' => 'Something happened: ' . $e->getMessage()]);
         }
     }
-
-    // public function upload_profile_photo(Request $request, $id)
-    // {
-    //     $user = Profile::where('id', $id)->first(); // استخدم first() للحصول على نتيجة واحدة  
-
-    //     if (!$user) {
-    //         return response()->json(['error' => 'User not found'], 404);
-    //     }
-
-    //     if (!$request->hasFile('image')) {
-    //         return response()->json(['error' => 'Image not provided'], 400);
-    //     }
-
-    //     $user_name = $user->name; // احصل على اسم المستخدم  
-
-    //     // upload image  
-
-    //     $userDirectory = "public/media/users/$user_name/images/profile";
-
-    //     // تحقق من وجود المجلد، إذا لم يكن موجودًا قم بإنشائه  
-    //     if (!Storage::exists($userDirectory)) {
-    //         Storage::makeDirectory($userDirectory);
-    //     }
-
-    //     // احصل على الملف  
-    //     $file = $request->file('image');
-
-    //     // قم بتحديد اسم الملف  
-    //     $filename = $filename = $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
-
-    //     // قم بتخزين الصورة في المجلد الخاص بالمستخدم  
-    //     $file->storeAs($userDirectory, $filename);
-    //     $user->avatar = json_encode(['filename' => $filename]);
-    //     $user->save();
-    //     return response()->json(['filename' => $filename], 200);
-    // }
-
-
-    // public function upload_profile_cover(Request $request, $id)
-    // {
-    //     $user = Profile::where('id', $id)->first(); // استخدم first() للحصول على نتيجة واحدة  
-
-    //     if (!$user) {
-    //         return response()->json(['error' => 'User not found'], 404);
-    //     }
-
-    //     if (!$request->hasFile('cover_image')) {
-    //         return response()->json(['error' => 'Image not provided'], 400);
-    //     }
-
-    //     $user_name = $user->name; // احصل على اسم المستخدم  
-
-    //     // upload image  
-    //     $userDirectory = "public/media/users/$user_name/images/cover";
-    //     // تحقق من وجود المجلد، إذا لم يكن موجودًا قم بإنشائه  
-    //     if (!Storage::exists($userDirectory)) {
-    //         Storage::makeDirectory($userDirectory);
-    //     }
-
-    //     // احصل على الملف  
-    //     $file = $request->file('cover_image');
-
-    //     // قم بتحديد اسم الملف  
-    //     $filename = time() . '.' . $file->getClientOriginalExtension();
-
-    //     // قم بتخزين الصورة في المجلد الخاص بالمستخدم  
-    //     $file->storeAs($userDirectory, $filename);
-    //     $user->avatar = json_encode(['filename' => $filename]);
-    //     $user->save();
-    //     return response()->json(['filename' => $filename], 200);
-    // }
 
 
 

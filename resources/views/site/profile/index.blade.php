@@ -210,7 +210,7 @@
                                 </div>
                                 <div class="text-center">
                                     <h5 class="fs-5 mb-0 fw-semibold">{{ $user_name->profile->name }}</h5>
-                                    <p class="mb-0 fs-4">Designer</p>
+                                    <p class="mb-0 fs-4">{{ $user_name->profile->bio }}</p>
                                 </div>
                             </div>
                         </div>
@@ -296,25 +296,59 @@
                                     <p>Hello, I am Mathew Anderson. I love making websites and graphics. Lorem ipsum dolor
                                         sit amet, consectetur adipiscing elit.</p>
                                     <ul class="list-unstyled mb-0">
-                                        <li class="d-flex align-items-center gap-3 mb-4">
-                                            <i class="fa fa-briefcase text-dark fs-6"></i>
-                                            <h6 class="fs-4 fw-semibold mb-0">Sir, P P Institute Of Science</h6>
-                                        </li>
-                                        <li class="d-flex align-items-center gap-3 mb-4">
-                                            <i class="fa fa-envelope text-dark fs-6"></i>
-                                            <h6 class="fs-4 fw-semibold mb-0"><a href="/cdn-cgi/l/email-protection"
-                                                    class="__cf_email__"
-                                                    data-cfemail="39414043535657584d515857795e54585055175a5654">[email&#160;protected]</a>
-                                            </h6>
-                                        </li>
-                                        <li class="d-flex align-items-center gap-3 mb-4">
-                                            <i class="fa fa-desktop text-dark fs-6"></i>
-                                            <h6 class="fs-4 fw-semibold mb-0">www.xyz.com</h6>
-                                        </li>
-                                        <li class="d-flex align-items-center gap-3 mb-2">
-                                            <i class="fa fa-list text-dark fs-6"></i>
-                                            <h6 class="fs-4 fw-semibold mb-0">Newyork, USA - 100001</h6>
-                                        </li>
+                                        @if (!empty($user_name->profile->professional_title))
+                                            <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
+                                            <li class="d-flex align-items-center gap-3 mb-4">
+                                                <i class="fa fa-briefcase text-dark fs-6"></i>
+                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->professional_title }}
+                                                </h6>
+                                            </li>
+                                        @endif
+                                        @if (!empty($user_name->profile->email))
+                                            <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
+                                            <li class="d-flex align-items-center gap-3 mb-4">
+                                                <i class="fa fa-envelope text-dark fs-6"></i>
+                                                <h6 class="fs-4 fw-semibold mb-0"><a href="/cdn-cgi/l/email-protection"
+                                                        class="__cf_email__"
+                                                        data-cfemail="39414043535657584d515857795e54585055175a5654">{{ $user_name->profile->email }}</a>
+                                                </h6>
+                                            </li>
+                                        @endif
+                                        @if (!empty($user_name->profile->universe_name))
+                                            <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
+                                            <li class="d-flex align-items-center gap-3 mb-4">
+                                                <i class="fa fa-graduation-cap text-dark fs-6"></i>
+                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->universe_name }}</h6>
+                                            </li>
+                                        @endif
+                                        @if (!empty($user_name->profile->school_name))
+                                            <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
+                                            <li class="d-flex align-items-center gap-3 mb-4">
+                                                <i class="fa fa-graduation-cap text-dark fs-6"></i>
+                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->school_name }}</h6>
+                                            </li>
+                                        @endif
+                                        @if (!empty($user_name->profile->location))
+                                            <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
+                                            <li class="d-flex align-items-center gap-3 mb-4">
+                                                <i class="fa fa-home text-dark fs-6"></i>
+                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->location }}</h6>
+                                            </li>
+                                        @endif
+                                        @if (!empty($user_name->profile->date_of_birth))
+                                            <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
+                                            <li class="d-flex align-items-center gap-3 mb-4">
+                                                <i class="fa fa-birthday-cake text-dark fs-6"></i>
+                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->date_of_birth }}</h6>
+                                            </li>
+                                        @endif
+                                        @if (!empty($user_name->profile->gender))
+                                            <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
+                                            <li class="d-flex align-items-center gap-3 mb-4">
+                                                <i class="fa fa-user text-dark fs-6"></i>
+                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->gender }}</h6>
+                                            </li>
+                                        @endif
                                     </ul>
                                 </div>
                             </div>
