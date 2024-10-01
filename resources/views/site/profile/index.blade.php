@@ -4,9 +4,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style type="text/css">
         /* body {
-            padding-top: 20px;
-            background: #dcdcdc;
-        } */
+                    padding-top: 20px;
+                    background: #dcdcdc;
+                } */
 
         .img-fluid {
             max-width: 100%;
@@ -131,7 +131,7 @@
         .cover-image {
             width: 100%;
             /* يضمن أن الصورة تأخذ العرض الكامل للكارد */
-            height: 500px;
+            height: 400px;
             /* ارتفاع ثابت */
             object-fit: cover;
             /* الصورة ستغطي العنصر بالكامل */
@@ -156,7 +156,7 @@
                         @endphp
 
                         @if ($filename)
-                            <img src="{{ url('/storage/media/users/' . $user_name->profile->name . '/images/cover/' . $filename) }}"
+                            <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id . '/images/cover/' . $filename) }}"
                                 alt="Cover Photo" class="img-fluid cover-image">
                         @else
                             <img src="https://www.bootdey.com/image/1352x300/FF7F50/000000" alt
@@ -202,7 +202,7 @@
                                                 @endphp
 
                                                 {{-- @if ($filename) --}}
-                                                <img src="{{ url('/storage/media/users/' . $user_name->profile->name . '/images/profile/' . $filename) }}"
+                                                <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id . '/images/profile/' . $filename) }}"
                                                     alt="Avatar Photo" class="w-100 h-100">
                                             @endif
                                         </div>
@@ -300,7 +300,8 @@
                                             <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
                                             <li class="d-flex align-items-center gap-3 mb-4">
                                                 <i class="fa fa-briefcase text-dark fs-6"></i>
-                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->professional_title }}
+                                                <h6 class="fs-4 fw-semibold mb-0">
+                                                    {{ $user_name->profile->professional_title }}
                                                 </h6>
                                             </li>
                                         @endif
@@ -318,14 +319,16 @@
                                             <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
                                             <li class="d-flex align-items-center gap-3 mb-4">
                                                 <i class="fa fa-graduation-cap text-dark fs-6"></i>
-                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->universe_name }}</h6>
+                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->universe_name }}
+                                                </h6>
                                             </li>
                                         @endif
                                         @if (!empty($user_name->profile->school_name))
                                             <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
                                             <li class="d-flex align-items-center gap-3 mb-4">
                                                 <i class="fa fa-graduation-cap text-dark fs-6"></i>
-                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->school_name }}</h6>
+                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->school_name }}
+                                                </h6>
                                             </li>
                                         @endif
                                         @if (!empty($user_name->profile->location))
@@ -339,7 +342,8 @@
                                             <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
                                             <li class="d-flex align-items-center gap-3 mb-4">
                                                 <i class="fa fa-birthday-cake text-dark fs-6"></i>
-                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->date_of_birth }}</h6>
+                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->date_of_birth }}
+                                                </h6>
                                             </li>
                                         @endif
                                         @if (!empty($user_name->profile->gender))
@@ -756,3 +760,4 @@
 
     </html>
 @endsection
+1

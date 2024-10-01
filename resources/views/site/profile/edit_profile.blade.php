@@ -104,7 +104,7 @@
                             @endphp
 
                             @if ($filename)
-                                <img src="{{ url('/storage/media/users/' . $user_profile->name . '/images/profile/' . $filename) }}"
+                                <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id . '/images/profile/' . $filename) }}"
                                     class="profile-photo" alt="Profile Photo">
                             @else
                                 <img src="{{ asset('images/300x300.png') }}" class="profile-photo rounded-circle"
@@ -130,7 +130,7 @@
                             @endphp
 
                             @if ($filename)
-                                <img src="{{ url('/storage/media/users/' . $user_profile->name . '/images/cover/' . $filename) }}"
+                                <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id . '/images/cover/' . $filename) }}"
                                     class="cover-photo" alt="Profile Photo">
                             @else
                                 <img src="https://via.placeholder.com/300x300" class="cover-photo" alt="Profile Photo">
@@ -270,7 +270,7 @@
 
     <script>
         const userId = {{ $user_profile->id }};
-        // إعدادات لرفع صورة الملف الشخصي  
+        // إعدادات لرفع صورة الملف الشخصي
         const inputElement = document.querySelector('input[id="image"]');
         const pond = FilePond.create(inputElement);
         pond.setOptions({
@@ -292,14 +292,14 @@
             reader.onload = function(e) {
                 const coverPreviewImg = document.querySelector('#profile-preview img');
 
-                // تحديث مصدر الصورة  
-                coverPreviewImg.src = e.target.result; // تعيين مصدر الصورة  
-                coverPreviewImg.style.display = "block"; // إظهار صورة المعاينة بعد رفعها  
+                // تحديث مصدر الصورة
+                coverPreviewImg.src = e.target.result; // تعيين مصدر الصورة
+                coverPreviewImg.style.display = "block"; // إظهار صورة المعاينة بعد رفعها
             };
-            reader.readAsDataURL(file.file); // قراءة الملف كـ Data URL  
+            reader.readAsDataURL(file.file); // قراءة الملف كـ Data URL
         });
 
-        // إعدادات لرفع صورة الغلاف  
+        // إعدادات لرفع صورة الغلاف
         const inputElement1 = document.querySelector('input[id="cover_image"]');
         const pond1 = FilePond.create(inputElement1);
         pond1.setOptions({
@@ -321,18 +321,18 @@
             reader.onload = function(e) {
                 const coverPreviewImg = document.querySelector('#cover-preview img');
 
-                // تحديث مصدر الصورة  
-                coverPreviewImg.src = e.target.result; // تعيين مصدر الصورة  
-                coverPreviewImg.style.display = "block"; // إظهار صورة المعاينة بعد رفعها  
+                // تحديث مصدر الصورة
+                coverPreviewImg.src = e.target.result; // تعيين مصدر الصورة
+                coverPreviewImg.style.display = "block"; // إظهار صورة المعاينة بعد رفعها
 
-                // تعيين الخصائص المطلوبة مباشرة  
-                // التأكد من أن الصورة تتناسب مع مظهر الصورة الافتراضية   
-                coverPreviewImg.style.width = "100%"; // عرض 100%  
-                coverPreviewImg.style.height = "500px"; // ارتفاع تلقائي  
-                coverPreviewImg.style.borderRadius = "15px"; // زوايا دائرية  
-                coverPreviewImg.style.objectFit = "cover"; // تأكد من تغطية المساحة   
+                // تعيين الخصائص المطلوبة مباشرة
+                // التأكد من أن الصورة تتناسب مع مظهر الصورة الافتراضية
+                coverPreviewImg.style.width = "100%"; // عرض 100%
+                coverPreviewImg.style.height = "500px"; // ارتفاع تلقائي
+                coverPreviewImg.style.borderRadius = "15px"; // زوايا دائرية
+                coverPreviewImg.style.objectFit = "cover"; // تأكد من تغطية المساحة
             };
-            reader.readAsDataURL(file.file); // قراءة الملف كـ Data URL  
+            reader.readAsDataURL(file.file); // قراءة الملف كـ Data URL
         });
     </script>
 @endsection

@@ -1,3 +1,4 @@
+{{-- @dd($user_name->profile) --}}
 <!doctype html>
 <html lang="en">
 
@@ -51,7 +52,7 @@
                 @endphp
 
                 @if ($filename)
-                    <img src="{{ url('/storage/media/users/' . $user_name->profile->name . '/images/profile/' . $filename) }}"
+                    <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id . '/images/profile/' . $filename) }}"
                         alt="Avatar Photo" class="profile-photo1">
                 @else
                     <img src="{{ asset('images/undraw_profile.svg') }}" class="profile-photo1" alt="شعار" />
@@ -81,7 +82,7 @@
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item mx-3">
                     <a href="{{ route('user.profile', Auth::user()->id) }}" class="nav-link">
-                        {{ Auth::user()->name }}
+                        {{ $user_name->profile->name }}
                     </a>
                 </li>
                 <li class="nav-item mx-3">
@@ -107,7 +108,7 @@
 
     <div class="footer-content " style="background-color: rgba(195, 190, 189, 0.995)">
         <div class="row">
-            <div class="col-12 col-md-6 footer-left">
+            <div class="col-12 col-md-6">
                 <p>&copy; 2023 YTP. جميع الحقوق محفوظة.</p>
             </div>
             <div class="col-12 col-md-6 footer-right text-right">
@@ -124,11 +125,6 @@
             </div>
         </div>
     </div>
-
-</body>
-
-</html>
-
 
 </body>
 

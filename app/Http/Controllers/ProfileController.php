@@ -14,9 +14,6 @@ class ProfileController extends Controller
     public function profile($id)
     {
         $user_name = User::where('id', $id)->with('profile')->first();
-        // $profile_inf = Profile::where('id', $id)->with('user')->first(); 
-        // return $user_name;
-        // return view('site.profile.index', compact('user_name','profile_inf'));
         return view('site.profile.index', compact('user_name'));
     }
 
@@ -29,11 +26,10 @@ class ProfileController extends Controller
 
     public function update_profile(Request $request, string $id)
     {
-        
+
         try {
             $user = Profile::findOrFail($id);
-
-            // المصوفة للتحديث  
+            // المصوفة للتحديث
             $updateData = $request->only([
                 'name',
                 'bio',
@@ -48,26 +44,32 @@ class ProfileController extends Controller
                 'email'
             ]);
 
-            // إعداد مسار التخزين  
+            // إعداد مسار التخزين
             $user_name = $user->name;
             $userDirectory = "public/media/users/$user_name/images/profile";
 
-            // تحقق مما إذا كان هناك صورة جديدة للملف الشخصي  
+            // تحقق مما إذا كان هناك صورة جديدة للملف الشخصي
             if ($request->hasFile('image')) {
                 $updateData['avatar'] = $request->file('image')->store($userDirectory, 'local');
             } else {
-                $updateData['avatar'] = $user->avatar; // استخدام الصورة القديمة  
+                $updateData['avatar'] = $user->avatar; // استخدام الصورة القديمة
             }
 
-            // تحقق مما إذا كان هناك صورة جديدة لصورة الغلاف  
+            // تحقق مما إذا كان هناك صورة جديدة لصورة الغلاف
             if ($request->hasFile('cover_image')) {
                 $updateData['cover_image'] = $request->file('cover_image')->store($userDirectory, 'local');
             } else {
-                $updateData['cover_image'] = $user->cover_image; // استخدام صورة الغلاف القديمة  
+                $updateData['cover_image'] = $user->cover_image; // استخدام صورة الغلاف القديمة
             }
 
-            // تحديث الملف الشخصي  
+            // تحديث الملف الشخصي
             $user->update($updateData);
+
+            $userName = User::findOrFail($user->user_id);
+            if (isset($updateData['name'])) {
+                $userName->name = $updateData['name'];
+                $userName->save(); // حفظ التغييرات
+            }
 
             return redirect()->route('user.edit_profile_form', $user->id)
                 ->with('success', 'The profile has been updated successfully');
@@ -90,10 +92,10 @@ class ProfileController extends Controller
             return response()->json(['error' => 'Image not provided'], 400);
         }
 
-        $user_name = $user->name;
+        // $user_name = $user->id;
 
-        // upload image  
-        $userDirectory = "public/media/users/$user_name/images/profile";
+        // upload image
+        $userDirectory = "public/media/users/User_ID_$user->user_id/images/profile";
 
         if (!Storage::exists($userDirectory)) {
             Storage::makeDirectory($userDirectory);
@@ -103,7 +105,7 @@ class ProfileController extends Controller
         $filename = $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
         $file->storeAs($userDirectory, $filename);
 
-        // تخزين اسم الملف في الحقل avatar  
+        // تخزين اسم الملف في الحقل avatar
         $user->avatar = json_encode(['filename' => $filename]);
         $user->save();
 
@@ -123,8 +125,8 @@ class ProfileController extends Controller
         }
 
         $user_name = $user->name;
-        // upload image  
-        $userDirectory = "public/media/users/$user_name/images/cover";
+        // upload image
+        $userDirectory = "public/media/users/User_ID_$user->user_id/images/cover";
 
         if (!Storage::exists($userDirectory)) {
             Storage::makeDirectory($userDirectory);
@@ -134,8 +136,8 @@ class ProfileController extends Controller
         $filename = $user->id . '_cover_' . time() . '.' . $file->getClientOriginalExtension();
         $file->storeAs($userDirectory, $filename);
 
-        // تخزين اسم الملف في الحقل cover_image  
-        $user->cover_image = json_encode(['filename' => $filename]); // تأكد من وجود حقل cover_image في قاعدة البيانات  
+        // تخزين اسم الملف في الحقل cover_image
+        $user->cover_image = json_encode(['filename' => $filename]); // تأكد من وجود حقل cover_image في قاعدة البيانات
         $user->save();
 
         return response()->json(['filename' => $filename], 200);
