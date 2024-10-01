@@ -104,7 +104,7 @@
                             @endphp
 
                             @if ($filename)
-                                <img src="{{ url('/storage/media/users/' . $user_profile->name . '/images/profile/' . $filename) }}"
+                                <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id . '/images/profile/' . $filename) }}"
                                     class="profile-photo" alt="Profile Photo">
                             @else
                                 <img src="{{ asset('images/300x300.png') }}" class="profile-photo rounded-circle"
@@ -130,7 +130,7 @@
                             @endphp
 
                             @if ($filename)
-                                <img src="{{ url('/storage/media/users/' . $user_profile->name . '/images/cover/' . $filename) }}"
+                                <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id .  '/images/cover/' . $filename) }}"
                                     class="cover-photo" alt="Profile Photo">
                             @else
                                 <img src="https://via.placeholder.com/300x300" class="cover-photo" alt="Profile Photo">

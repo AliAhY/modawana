@@ -3,10 +3,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style type="text/css">
-        body {
+        /* body {
             padding-top: 20px;
             background: #dcdcdc;
-        }
+        } */
 
         .img-fluid {
             max-width: 100%;
@@ -131,7 +131,7 @@
         .cover-image {
             width: 100%;
             /* يضمن أن الصورة تأخذ العرض الكامل للكارد */
-            height: 300px;
+            height: 400px;
             /* ارتفاع ثابت */
             object-fit: cover;
             /* الصورة ستغطي العنصر بالكامل */
@@ -156,8 +156,8 @@
                         @endphp
 
                         @if ($filename)
-                            <img src="{{ url('/storage/media/users/' . $user_name->profile->name . '/images/cover/' . $filename) }}"
-                                alt="Cover Photo" class="img-fluid">
+                            <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id  . '/images/cover/' . $filename) }}"
+                                alt="Cover Photo" class="img-fluid cover-image">
                         @else
                             <img src="https://www.bootdey.com/image/1352x300/FF7F50/000000" alt
                                 class="img-fluid cover-image">
@@ -202,7 +202,7 @@
                                                 @endphp
 
                                                 {{-- @if ($filename) --}}
-                                                <img src="{{ url('/storage/media/users/' . $user_name->profile->name . '/images/profile/' . $filename) }}"
+                                                <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id . '/images/profile/' . $filename) }}"
                                                     alt="Avatar Photo" class="w-100 h-100">
                                             @endif
                                         </div>

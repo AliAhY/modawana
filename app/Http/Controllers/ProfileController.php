@@ -14,9 +14,6 @@ class ProfileController extends Controller
     public function profile($id)
     {
         $user_name = User::where('id', $id)->with('profile')->first();
-        // $profile_inf = Profile::where('id', $id)->with('user')->first(); 
-        // return $user_name;
-        // return view('site.profile.index', compact('user_name','profile_inf'));
         return view('site.profile.index', compact('user_name'));
     }
 
@@ -29,10 +26,9 @@ class ProfileController extends Controller
 
     public function update_profile(Request $request, string $id)
     {
-        
+
         try {
             $user = Profile::findOrFail($id);
-
             // المصوفة للتحديث  
             $updateData = $request->only([
                 'name',
@@ -69,6 +65,12 @@ class ProfileController extends Controller
             // تحديث الملف الشخصي  
             $user->update($updateData);
 
+            $userName = User::findOrFail($user->user_id);
+            if (isset($updateData['name'])) {
+                $userName->name = $updateData['name'];
+                $userName->save(); // حفظ التغييرات  
+            }
+
             return redirect()->route('user.edit_profile_form', $user->id)
                 ->with('success', 'The profile has been updated successfully');
         } catch (Exception $e) {
@@ -90,10 +92,10 @@ class ProfileController extends Controller
             return response()->json(['error' => 'Image not provided'], 400);
         }
 
-        $user_name = $user->name;
+        // $user_name = $user->id;
 
         // upload image  
-        $userDirectory = "public/media/users/$user_name/images/profile";
+        $userDirectory = "public/media/users/User_ID_$user->user_id/images/profile";
 
         if (!Storage::exists($userDirectory)) {
             Storage::makeDirectory($userDirectory);
@@ -124,7 +126,7 @@ class ProfileController extends Controller
 
         $user_name = $user->name;
         // upload image  
-        $userDirectory = "public/media/users/$user_name/images/cover";
+        $userDirectory = "public/media/users/User_ID_$user->user_id/images/cover";
 
         if (!Storage::exists($userDirectory)) {
             Storage::makeDirectory($userDirectory);
