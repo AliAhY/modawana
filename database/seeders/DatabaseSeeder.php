@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('admin'),
             'gender' => 'female',
             'status' => 0,
+            'gender' => 'male',
         ]);
     }
 }

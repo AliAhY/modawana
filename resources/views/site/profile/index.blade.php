@@ -3,10 +3,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style type="text/css">
-        body {
+        /* body {
             padding-top: 20px;
             background: #dcdcdc;
-        }
+        } */
 
         .img-fluid {
             max-width: 100%;
@@ -131,7 +131,7 @@
         .cover-image {
             width: 100%;
             /* يضمن أن الصورة تأخذ العرض الكامل للكارد */
-            height: 300px;
+            height: 400px;
             /* ارتفاع ثابت */
             object-fit: cover;
             /* الصورة ستغطي العنصر بالكامل */
@@ -156,8 +156,8 @@
                         @endphp
 
                         @if ($filename)
-                            <img src="{{ url('/storage/media/users/' . $user_name->profile->name . '/images/cover/' . $filename) }}"
-                                alt="Cover Photo" class="img-fluid">
+                            <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id  . '/images/cover/' . $filename) }}"
+                                alt="Cover Photo" class="img-fluid cover-image">
                         @else
                             <img src="https://www.bootdey.com/image/1352x300/FF7F50/000000" alt
                                 class="img-fluid cover-image">
@@ -202,7 +202,7 @@
                                                 @endphp
 
                                                 {{-- @if ($filename) --}}
-                                                <img src="{{ url('/storage/media/users/' . $user_name->profile->name . '/images/profile/' . $filename) }}"
+                                                <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id . '/images/profile/' . $filename) }}"
                                                     alt="Avatar Photo" class="w-100 h-100">
                                             @endif
                                         </div>
@@ -210,7 +210,7 @@
                                 </div>
                                 <div class="text-center">
                                     <h5 class="fs-5 mb-0 fw-semibold">{{ $user_name->profile->name }}</h5>
-                                    <p class="mb-0 fs-4">Designer</p>
+                                    <p class="mb-0 fs-4">{{ $user_name->profile->bio }}</p>
                                 </div>
                             </div>
                         </div>
@@ -296,25 +296,59 @@
                                     <p>Hello, I am Mathew Anderson. I love making websites and graphics. Lorem ipsum dolor
                                         sit amet, consectetur adipiscing elit.</p>
                                     <ul class="list-unstyled mb-0">
-                                        <li class="d-flex align-items-center gap-3 mb-4">
-                                            <i class="fa fa-briefcase text-dark fs-6"></i>
-                                            <h6 class="fs-4 fw-semibold mb-0">Sir, P P Institute Of Science</h6>
-                                        </li>
-                                        <li class="d-flex align-items-center gap-3 mb-4">
-                                            <i class="fa fa-envelope text-dark fs-6"></i>
-                                            <h6 class="fs-4 fw-semibold mb-0"><a href="/cdn-cgi/l/email-protection"
-                                                    class="__cf_email__"
-                                                    data-cfemail="39414043535657584d515857795e54585055175a5654">[email&#160;protected]</a>
-                                            </h6>
-                                        </li>
-                                        <li class="d-flex align-items-center gap-3 mb-4">
-                                            <i class="fa fa-desktop text-dark fs-6"></i>
-                                            <h6 class="fs-4 fw-semibold mb-0">www.xyz.com</h6>
-                                        </li>
-                                        <li class="d-flex align-items-center gap-3 mb-2">
-                                            <i class="fa fa-list text-dark fs-6"></i>
-                                            <h6 class="fs-4 fw-semibold mb-0">Newyork, USA - 100001</h6>
-                                        </li>
+                                        @if (!empty($user_name->profile->professional_title))
+                                            <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
+                                            <li class="d-flex align-items-center gap-3 mb-4">
+                                                <i class="fa fa-briefcase text-dark fs-6"></i>
+                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->professional_title }}
+                                                </h6>
+                                            </li>
+                                        @endif
+                                        @if (!empty($user_name->profile->email))
+                                            <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
+                                            <li class="d-flex align-items-center gap-3 mb-4">
+                                                <i class="fa fa-envelope text-dark fs-6"></i>
+                                                <h6 class="fs-4 fw-semibold mb-0"><a href="/cdn-cgi/l/email-protection"
+                                                        class="__cf_email__"
+                                                        data-cfemail="39414043535657584d515857795e54585055175a5654">{{ $user_name->profile->email }}</a>
+                                                </h6>
+                                            </li>
+                                        @endif
+                                        @if (!empty($user_name->profile->universe_name))
+                                            <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
+                                            <li class="d-flex align-items-center gap-3 mb-4">
+                                                <i class="fa fa-graduation-cap text-dark fs-6"></i>
+                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->universe_name }}</h6>
+                                            </li>
+                                        @endif
+                                        @if (!empty($user_name->profile->school_name))
+                                            <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
+                                            <li class="d-flex align-items-center gap-3 mb-4">
+                                                <i class="fa fa-graduation-cap text-dark fs-6"></i>
+                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->school_name }}</h6>
+                                            </li>
+                                        @endif
+                                        @if (!empty($user_name->profile->location))
+                                            <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
+                                            <li class="d-flex align-items-center gap-3 mb-4">
+                                                <i class="fa fa-home text-dark fs-6"></i>
+                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->location }}</h6>
+                                            </li>
+                                        @endif
+                                        @if (!empty($user_name->profile->date_of_birth))
+                                            <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
+                                            <li class="d-flex align-items-center gap-3 mb-4">
+                                                <i class="fa fa-birthday-cake text-dark fs-6"></i>
+                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->date_of_birth }}</h6>
+                                            </li>
+                                        @endif
+                                        @if (!empty($user_name->profile->gender))
+                                            <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
+                                            <li class="d-flex align-items-center gap-3 mb-4">
+                                                <i class="fa fa-user text-dark fs-6"></i>
+                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->gender }}</h6>
+                                            </li>
+                                        @endif
                                     </ul>
                                 </div>
                             </div>
@@ -365,25 +399,28 @@
                         <div class="col-lg-8">
                             <div class="card shadow-none border">
                                 <div class="card-body">
-                                    <div class="form-floating mb-3">
-                                        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 137px"></textarea>
-                                        <label for="floatingTextarea2" class="p-7">Share your thoughts</label>
-                                    </div>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <a class="text-white d-flex align-items-center justify-content-center bg-primary p-2 fs-4 rounded-circle"
-                                            href="javascript:void(0)">
-                                            <i class="fa fa-photo"></i>
-                                        </a>
-                                        <a href="javascript:void(0)" class="text-dark px-3 py-2">Photo / Video</a>
-                                        <a href="javascript:void(0)" class="d-flex align-items-center gap-2">
-                                            <div
-                                                class="text-white d-flex align-items-center justify-content-center bg-secondary p-2 fs-4 rounded-circle">
-                                                <i class="fa fa-list"></i>
-                                            </div>
-                                            <span class="text-dark">Article</span>
-                                        </a>
-                                        <button class="btn btn-primary ms-auto">Post</button>
-                                    </div>
+                                    <form id="comment-form" action="/comments" method="post">
+                                        <div class="form-floating mb-3">
+                                            <textarea class="form-control" name="content" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 137px"></textarea>
+                                            <label for="floatingTextarea2" class="p-7">Share your thoughts</label>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <a class="text-white d-flex align-items-center justify-content-center bg-primary p-2 fs-4 rounded-circle"
+                                                href="javascript:void(0)">
+                                                <i class="fa fa-photo"></i>
+                                            </a>
+                                            <a href="javascript:void(0)" class="text-dark px-3 py-2">Photo / Video</a>
+                                            <a href="javascript:void(0)" class="d-flex align-items-center gap-2">
+                                                <div
+                                                    class="text-white d-flex align-items-center justify-content-center bg-secondary p-2 fs-4 rounded-circle">
+                                                    <i class="fa fa-list"></i>
+                                                </div>
+                                                <span class="text-dark">Article</span>
+                                            </a>
+                                            <input type="submit" class="btn btn-primary ms-auto" id="post-btn" value="Post">
+                                        </div>
+                                    </form>
+                                </div>
                                 </div>
                             </div>
                             <div class="card">
@@ -718,6 +755,21 @@
         <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
         <script type="text/javascript"></script>
+        <script>
+            document.getElementById('post-btn').addEventListener('click', function(event) {
+                event.preventDefault();
+                var formData = new FormData(document.getElementById('comment-form'));
+                formData.append('content', document.getElementById('floatingTextarea2').value);
+                fetch('/comments', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error(error));
+            });
+        </script>
     </body>
 
     </html>

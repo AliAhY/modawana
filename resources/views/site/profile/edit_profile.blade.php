@@ -56,6 +56,18 @@
             object-fit: cover;
             /* يضمن أن الصورة تغطي المساحة */
         }
+
+        .profile-photo1 {
+            width: 60px;
+            /* عرض ثابت */
+            height: 60px;
+            /* طول ثابت */
+            border-radius: 50%;
+            /* دائري */
+            object-fit: cover;
+            /* يضمن أن الصورة تغطي المساحة */
+            margin-bottom: 15px;
+        }
     </style>
 
     @if ($errors->any())
@@ -92,10 +104,10 @@
                             @endphp
 
                             @if ($filename)
-                                <img src="{{ url('/storage/media/users/' . $user_profile->name . '/images/profile/' . $filename) }}"
+                                <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id . '/images/profile/' . $filename) }}"
                                     class="profile-photo" alt="Profile Photo">
                             @else
-                                <img src="{{ asset('images/300x300.png') }}" class="profile-photo rounded-circle" 
+                                <img src="{{ asset('images/300x300.png') }}" class="profile-photo rounded-circle"
                                     alt="Profile Photo">
                             @endif
                         @endif
@@ -109,8 +121,7 @@
                 <div class="card-body text-center">
                     <div id="cover-preview">
                         @if ($user_profile->cover_image == null)
-                            <img src="https://via.placeholder.com/300x300" class="cover-photo"
-                                alt="Profile Photo">
+                            <img src="https://via.placeholder.com/300x300" class="cover-photo" alt="Profile Photo">
                         @else
                             @php
                                 // تحليل قيمة avatar (JSON) لاسترداد اسم الملف
@@ -119,11 +130,10 @@
                             @endphp
 
                             @if ($filename)
-                                <img src="{{ url('/storage/media/users/' . $user_profile->name . '/images/cover/' . $filename) }}"
+                                <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id .  '/images/cover/' . $filename) }}"
                                     class="cover-photo" alt="Profile Photo">
                             @else
-                                <img src="https://via.placeholder.com/300x300" class="cover-photo"
-                                    alt="Profile Photo">
+                                <img src="https://via.placeholder.com/300x300" class="cover-photo" alt="Profile Photo">
                             @endif
                         @endif
                     </div>

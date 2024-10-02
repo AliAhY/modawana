@@ -1,3 +1,4 @@
+{{-- @dd($user_name->profile) --}}
 <!doctype html>
 <html lang="en">
 
@@ -21,6 +22,19 @@
     @yield('cssAndJs')
 
 </head>
+<style>
+    .profile-photo1 {
+        width: 60px;
+        /* عرض ثابت */
+        height: 60px;
+        /* طول ثابت */
+        border-radius: 50%;
+        /* دائري */
+        object-fit: cover;
+        /* يضمن أن الصورة تغطي المساحة */
+        margin-bottom: 15px;
+    }
+</style>
 
 <body>
 
@@ -28,7 +42,24 @@
     <nav class="navbar navbar-expand-lg navbar-light  navbar-fixed"
         style="background-color: rgba(195, 190, 189, 0.511)">
         <a class="navbar-brand" href="{{ url('/') }}">
-            <img src="{{ asset('images/undraw_profile.svg') }}" style="width: 80px" alt="شعار" />
+            {{-- @dd($user_name) --}}
+            @if (isset($user_name) && isset($user_name->profile) && $user_name->profile->avatar !== null)
+                {{-- @dd($user_name->profile) --}}
+                @php
+                    // تحليل قيمة avatar (JSON) لاسترداد اسم الملف
+                    $avatarData = json_decode($user_name->profile->avatar);
+                    $filename = $avatarData->filename ?? null; // التأكد من وجود البيانات
+                @endphp
+
+                @if ($filename)
+                    <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id . '/images/profile/' . $filename) }}"
+                        alt="Avatar Photo" class="profile-photo1">
+                @else
+                    <img src="{{ asset('images/undraw_profile.svg') }}" class="profile-photo1" alt="شعار" />
+                @endif
+            @else
+                {{-- لا تظهر الصورة إذا كان المستخدم غير مسجل أو ليس له صورة شخصية --}}
+            @endif
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="تبديل التنقل">
@@ -49,38 +80,26 @@
         </form>
         @if (Auth::check())
             <ul class="navbar-nav ml-auto">
-
-                <a href="{{ route('user.profile', Auth::user()->id) }}">
-                    <li class="nav-item mx-3">
-                        {{ Auth::user()->name }}مرحبًا
-                    </li>
-                </a>
-
-
-
+                <li class="nav-item mx-3">
+                    <a href="{{ route('user.profile', Auth::user()->id) }}" class="nav-link">
+                        {{ $user_name->profile->name }}
+                    </a>
+                </li>
                 <li class="nav-item mx-3">
                     <a class="nav-link" href="{{ route('logout') }}">Logout</a>
                 </li>
-
             </ul>
         @else
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item mx-3">
                     <a class="nav-link" href="{{ url('/register') }}">Sign up</a>
                 </li>
-            </ul>
-            <ul class="navbar-nav ml-auto">
                 <li class="nav-item mx-3">
                     <a class="nav-link" href="{{ url('/login') }}">Login</a>
                 </li>
             </ul>
         @endif
-
-
-
     </nav>
-
-
 
     <div class="p-2">
         @yield('main')
@@ -89,7 +108,7 @@
 
     <div class="footer-content " style="background-color: rgba(195, 190, 189, 0.995)">
         <div class="row">
-            <div class="col-12 col-md-6 footer-left">
+            <div class="col-12 col-md-6">
                 <p>&copy; 2023 YTP. جميع الحقوق محفوظة.</p>
             </div>
             <div class="col-12 col-md-6 footer-right text-right">
@@ -106,11 +125,6 @@
             </div>
         </div>
     </div>
-
-</body>
-
-</html>
-
 
 </body>
 
