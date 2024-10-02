@@ -28,6 +28,49 @@
                 background: linear-gradient(to right, #e78123, #12343a, #d23475, #123593);
             }
         }
+
+
+
+.animated-radio[type="radio"] {
+    position: relative;
+    cursor: pointer;
+}
+
+.animated-radio[type="radio"]:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    transition: transform 0.3s ease;
+}
+
+.animated-radio[type="radio"]:checked:before {
+    transform: scale(1.2);
+    border-color: #337ab7;
+    background-color: #337ab7;
+}
+
+.color-change {
+        transition: color 0.3s ease;
+    }
+
+    .color-change:hover {
+        color: #337ab7;
+    }
+
+    .form-check-label {
+        font-weight: bold;
+        color: #337ab7;
+    }
+
+    .form-check-label:hover {
+        color: #23527c;
+    }
     </style>
 
 </head>
@@ -77,6 +120,28 @@
                                         @enderror
                                     </div>
 
+                                    <div class="form-outline mb-4">
+                                        <div class="card border-radius-10 shadow-sm hover-shadow">
+                                            <div class="card-body bg-light-gray">
+                                                <label class="form-label" for="gender">Gender</label> 
+                                                <div class="d-flex justify-content-between">
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input animated-radio" type="radio" name="gender" id="male" value="male">
+                                                        <label class="form-check-label color-change" for="male"><i class="fas fa-male"></i> Male</label>
+                                                    </div>
+                                                    
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input animated-radio" type="radio" name="gender" id="female" value="female">
+                                                        <label class="form-check-label color-change" for="female"><i class="fas fa-female"></i> Female</label>
+                                                    </div>
+                                                </div>
+                                                @if($errors->has('gender'))
+                                                    <div class="error text-danger">{{ $errors->first('gender') }}</div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                     <div class="form-outline mb-4">
                                         <label class="form-label" for="form2Example22">Password</label>
                                         <input type="password" id="password" name="password" class="form-control" />

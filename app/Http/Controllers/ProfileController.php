@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use App\Models\Profile;
 use App\Models\User;
 use Exception;
@@ -26,10 +27,9 @@ class ProfileController extends Controller
 
     public function update_profile(Request $request, string $id)
     {
-        
+
         try {
             $user = Profile::findOrFail($id);
-
             // المصوفة للتحديث  
             $updateData = $request->only([
                 'name',
@@ -66,83 +66,18 @@ class ProfileController extends Controller
             // تحديث الملف الشخصي  
             $user->update($updateData);
 
+            $userName = User::findOrFail($user->user_id);
+            if (isset($updateData['name'])) {
+                $userName->name = $updateData['name'];
+                $userName->save(); // حفظ التغييرات  
+            }
+
             return redirect()->route('user.edit_profile_form', $user->id)
                 ->with('success', 'The profile has been updated successfully');
         } catch (Exception $e) {
             return back()->withErrors(['error' => 'Something happened: ' . $e->getMessage()]);
         }
     }
-
-    // public function upload_profile_photo(Request $request, $id)
-    // {
-    //     $user = Profile::where('id', $id)->first(); // استخدم first() للحصول على نتيجة واحدة  
-
-    //     if (!$user) {
-    //         return response()->json(['error' => 'User not found'], 404);
-    //     }
-
-    //     if (!$request->hasFile('image')) {
-    //         return response()->json(['error' => 'Image not provided'], 400);
-    //     }
-
-    //     $user_name = $user->name; // احصل على اسم المستخدم  
-
-    //     // upload image  
-
-    //     $userDirectory = "public/media/users/$user_name/images/profile";
-
-    //     // تحقق من وجود المجلد، إذا لم يكن موجودًا قم بإنشائه  
-    //     if (!Storage::exists($userDirectory)) {
-    //         Storage::makeDirectory($userDirectory);
-    //     }
-
-    //     // احصل على الملف  
-    //     $file = $request->file('image');
-
-    //     // قم بتحديد اسم الملف  
-    //     $filename = $filename = $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
-
-    //     // قم بتخزين الصورة في المجلد الخاص بالمستخدم  
-    //     $file->storeAs($userDirectory, $filename);
-    //     $user->avatar = json_encode(['filename' => $filename]);
-    //     $user->save();
-    //     return response()->json(['filename' => $filename], 200);
-    // }
-
-
-    // public function upload_profile_cover(Request $request, $id)
-    // {
-    //     $user = Profile::where('id', $id)->first(); // استخدم first() للحصول على نتيجة واحدة  
-
-    //     if (!$user) {
-    //         return response()->json(['error' => 'User not found'], 404);
-    //     }
-
-    //     if (!$request->hasFile('cover_image')) {
-    //         return response()->json(['error' => 'Image not provided'], 400);
-    //     }
-
-    //     $user_name = $user->name; // احصل على اسم المستخدم  
-
-    //     // upload image  
-    //     $userDirectory = "public/media/users/$user_name/images/cover";
-    //     // تحقق من وجود المجلد، إذا لم يكن موجودًا قم بإنشائه  
-    //     if (!Storage::exists($userDirectory)) {
-    //         Storage::makeDirectory($userDirectory);
-    //     }
-
-    //     // احصل على الملف  
-    //     $file = $request->file('cover_image');
-
-    //     // قم بتحديد اسم الملف  
-    //     $filename = time() . '.' . $file->getClientOriginalExtension();
-
-    //     // قم بتخزين الصورة في المجلد الخاص بالمستخدم  
-    //     $file->storeAs($userDirectory, $filename);
-    //     $user->avatar = json_encode(['filename' => $filename]);
-    //     $user->save();
-    //     return response()->json(['filename' => $filename], 200);
-    // }
 
 
 
@@ -158,10 +93,10 @@ class ProfileController extends Controller
             return response()->json(['error' => 'Image not provided'], 400);
         }
 
-        $user_name = $user->name;
+        // $user_name = $user->id;
 
         // upload image  
-        $userDirectory = "public/media/users/$user_name/images/profile";
+        $userDirectory = "public/media/users/User_ID_$user->user_id/images/profile";
 
         if (!Storage::exists($userDirectory)) {
             Storage::makeDirectory($userDirectory);
@@ -192,7 +127,7 @@ class ProfileController extends Controller
 
         $user_name = $user->name;
         // upload image  
-        $userDirectory = "public/media/users/$user_name/images/cover";
+        $userDirectory = "public/media/users/User_ID_$user->user_id/images/cover";
 
         if (!Storage::exists($userDirectory)) {
             Storage::makeDirectory($userDirectory);
@@ -207,5 +142,13 @@ class ProfileController extends Controller
         $user->save();
 
         return response()->json(['filename' => $filename], 200);
+    }
+
+    public function store_post(Request $request)
+    {
+        $comment = new Comment();
+        $comment->content = $request->input('content');
+        $comment->save();
+        return response()->json(['message' => 'Comment saved successfully'],200);
     }
 }
