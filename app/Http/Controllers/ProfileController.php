@@ -144,11 +144,4 @@ class ProfileController extends Controller
         return response()->json(['filename' => $filename], 200);
     }
 
-    public function store_post(Request $request)
-    {
-        $comment = new Comment();
-        $comment->content = $request->input('content');
-        $comment->save();
-        return response()->json(['message' => 'Comment saved successfully'],200);
-    }
 }

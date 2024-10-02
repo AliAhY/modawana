@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\BooksController;
 use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,5 +37,5 @@ Route::get('/edit_profile_form/{id}', [ProfileController::class, 'edit_profile_f
 Route::post('/upload/profile/{id}', [ProfileController::class, 'upload_profile_photo'])->name('upload.profile'); 
 Route::post('/upload/profile_cover/{id}', [ProfileController::class, 'upload_profile_cover'])->name('upload.cover'); 
 Route::put('/update_profile/{id}', [ProfileController::class, 'update_profile'])->name('update.profile'); 
-Route::post('/comments', [ProfileController::class, 'store_post'])->name('comments.store');
 
+Route::post('/posts/{id}', [PostController::class, 'store'])->name('posts.store');
