@@ -399,25 +399,28 @@
                         <div class="col-lg-8">
                             <div class="card shadow-none border">
                                 <div class="card-body">
-                                    <div class="form-floating mb-3">
-                                        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 137px"></textarea>
-                                        <label for="floatingTextarea2" class="p-7">Share your thoughts</label>
-                                    </div>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <a class="text-white d-flex align-items-center justify-content-center bg-primary p-2 fs-4 rounded-circle"
-                                            href="javascript:void(0)">
-                                            <i class="fa fa-photo"></i>
-                                        </a>
-                                        <a href="javascript:void(0)" class="text-dark px-3 py-2">Photo / Video</a>
-                                        <a href="javascript:void(0)" class="d-flex align-items-center gap-2">
-                                            <div
-                                                class="text-white d-flex align-items-center justify-content-center bg-secondary p-2 fs-4 rounded-circle">
-                                                <i class="fa fa-list"></i>
-                                            </div>
-                                            <span class="text-dark">Article</span>
-                                        </a>
-                                        <button class="btn btn-primary ms-auto">Post</button>
-                                    </div>
+                                    <form id="comment-form" action="/comments" method="post">
+                                        <div class="form-floating mb-3">
+                                            <textarea class="form-control" name="content" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 137px"></textarea>
+                                            <label for="floatingTextarea2" class="p-7">Share your thoughts</label>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <a class="text-white d-flex align-items-center justify-content-center bg-primary p-2 fs-4 rounded-circle"
+                                                href="javascript:void(0)">
+                                                <i class="fa fa-photo"></i>
+                                            </a>
+                                            <a href="javascript:void(0)" class="text-dark px-3 py-2">Photo / Video</a>
+                                            <a href="javascript:void(0)" class="d-flex align-items-center gap-2">
+                                                <div
+                                                    class="text-white d-flex align-items-center justify-content-center bg-secondary p-2 fs-4 rounded-circle">
+                                                    <i class="fa fa-list"></i>
+                                                </div>
+                                                <span class="text-dark">Article</span>
+                                            </a>
+                                            <input type="submit" class="btn btn-primary ms-auto" id="post-btn" value="Post">
+                                        </div>
+                                    </form>
+                                </div>
                                 </div>
                             </div>
                             <div class="card">
@@ -752,6 +755,21 @@
         <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
         <script type="text/javascript"></script>
+        <script>
+            document.getElementById('post-btn').addEventListener('click', function(event) {
+                event.preventDefault();
+                var formData = new FormData(document.getElementById('comment-form'));
+                formData.append('content', document.getElementById('floatingTextarea2').value);
+                fetch('/comments', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error(error));
+            });
+        </script>
     </body>
 
     </html>

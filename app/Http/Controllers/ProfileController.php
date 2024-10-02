@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use App\Models\Profile;
 use App\Models\User;
 use Exception;
@@ -141,5 +142,13 @@ class ProfileController extends Controller
         $user->save();
 
         return response()->json(['filename' => $filename], 200);
+    }
+
+    public function store_post(Request $request)
+    {
+        $comment = new Comment();
+        $comment->content = $request->input('content');
+        $comment->save();
+        return response()->json(['message' => 'Comment saved successfully'],200);
     }
 }
