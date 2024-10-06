@@ -3,11 +3,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style type="text/css">
-        /* body {
-                    padding-top: 20px;
-                    background: #dcdcdc;
-                } */
-
         .img-fluid {
             max-width: 100%;
             height: auto;
@@ -144,7 +139,6 @@
         <div class="container">
             <div class="card overflow-hidden">
                 <div class="card-body p-0">
-                    {{-- <img src="https://www.bootdey.com/image/1352x300/FF7F50/000000" alt class="img-fluid"> --}}
 
                     @if ($user_name->profile->cover_image == null)
                         <img src="https://www.bootdey.com/image/1352x300/FF7F50/000000" alt class="img-fluid cover-image">
@@ -183,6 +177,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-lg-4 mt-n3 order-lg-2 order-1">
                             <div class="mt-n5">
                                 <div class="d-flex align-items-center justify-content-center mb-2">
@@ -192,8 +187,11 @@
                                             style="width: 100px; height: 100px;" ;>
 
                                             @if ($user_name->profile->avatar == null)
-                                                <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt
-                                                    class="w-100 h-100">
+                                                @if ($user_name->gender == 'male')
+                                                    <img src="{{ asset('images/avatar6.png') }}" alt class="w-100 h-100">
+                                                @else
+                                                    <img src="{{ asset('images/avatar3.png') }}" alt class="w-100 h-100">
+                                                @endif
                                             @else
                                                 @php
                                                     // تحليل قيمة avatar (JSON) لاسترداد اسم الملف
@@ -267,12 +265,21 @@
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button
+                            <a href="{{ route('profile.friendes',$user_name->profile->id) }}"><button
+                                    class="nav-link position-relative rounded-0 d-flex align-items-center justify-content-center bg-transparent fs-3 py-6"
+                                    id="pills-friends-tab">
+                                    <i class="fa fa-users me-2 fs-6"></i>
+                                    <span class="d-none d-md-block">Add Request</span>
+                                </button></a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a href="{{ route('profile.allfriendes',$user_name->profile->id) }}"><button
                                 class="nav-link position-relative rounded-0 d-flex align-items-center justify-content-center bg-transparent fs-3 py-6"
                                 id="pills-friends-tab">
                                 <i class="fa fa-users me-2 fs-6"></i>
                                 <span class="d-none d-md-block">Friends</span>
                             </button>
+
                         </li>
                         <li class="nav-item" role="presentation">
                             <button
@@ -285,6 +292,15 @@
                     </ul>
                 </div>
             </div>
+            {{-- @foreach (auth()->user()->notifications as $notification)
+                <div>
+                    {{ $notification->data['message'] }}
+                    <form action="{{ route('friends.accept', $notification->id) }}" method="POST">
+                        @csrf
+                        <button type="submit">قبول</button>
+                    </form>
+                </div>
+            @endforeach --}}
             <div class="tab-content" id="pills-tabContent">
                 <div class="tab-pane fade show active" id="pills-profile" role="tabpanel"
                     aria-labelledby="pills-profile-tab" tabindex="0">
@@ -760,4 +776,3 @@
 
     </html>
 @endsection
-1

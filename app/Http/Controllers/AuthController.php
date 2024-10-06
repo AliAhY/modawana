@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-    // عرض نموذج التسجيل  
+    // عرض نموذج التسجيل
     public function showRegistrationForm()
     {
         return view('register');
@@ -27,7 +27,7 @@ class AuthController extends Controller
 
 
 
-        // إنشاء المستخدم  
+        // إنشاء المستخدم
         $user = User::factory()->create([
             'name' => $request->username,
             'email' => $request->email,
@@ -40,12 +40,13 @@ class AuthController extends Controller
         $user->profile()->create([
             'name' => $request->username,
             'email' => $request->email,
+            'gender' => $request->gender,
         ]);
 
-        // تجديد الجلسة  
+        // تجديد الجلسة
         session()->regenerate();
 
-        // تعيين المستخدم كمستخدم مسجل دخول  
+        // تعيين المستخدم كمستخدم مسجل دخول
         Auth::login($user);
 
         return redirect('/');
@@ -56,7 +57,7 @@ class AuthController extends Controller
         return view('login');
     }
 
-    // تسجيل الدخول  
+    // تسجيل الدخول
     public function login(Request $request)
     {
         $request->validate([
@@ -64,22 +65,22 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        // محاولة تسجيل الدخول  
+        // محاولة تسجيل الدخول
         if (Auth::attempt($request->only('email', 'password'))) {
             $user = Auth::user();
 
-            // التحقق من حالة المستخدم  
+            // التحقق من حالة المستخدم
             if ($user->status == 1) {
-                return redirect()->route('index.admin'); // توجيه إلى لوحة التحكم  
+                return redirect()->route('index.admin'); // توجيه إلى لوحة التحكم
             } elseif ($user->status == 0) {
-                return redirect()->route('index.user'); // توجيه إلى واجهة المستخدم  
+                return redirect()->route('index.user'); // توجيه إلى واجهة المستخدم
             }
         }
 
         return back()->withErrors(['email' => 'البريد الإلكتروني أو كلمة المرور خاطئة.']);
     }
 
-    // تسجيل الخروج  
+    // تسجيل الخروج
     public function logout(Request $request)
     {
         Auth::logout();

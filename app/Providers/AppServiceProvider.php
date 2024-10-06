@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         View::composer('site.*', function ($view) {
-            $id = Auth::id(); // تأكد من أنك تستخدم Auth لجلب معرف المستخدم  
+            $id = Auth::id(); // تأكد من أنك تستخدم Auth لجلب معرف المستخدم
             $user_name = $id ? User::with('profile')->find($id) : null;
             $view->with('user_name', $user_name);
         });

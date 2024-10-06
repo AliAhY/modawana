@@ -1,4 +1,3 @@
-{{-- @dd($user_name->profile) --}}
 <!doctype html>
 <html lang="en">
 
@@ -44,7 +43,6 @@
         <a class="navbar-brand" href="{{ url('/') }}">
             {{-- @dd($user_name) --}}
             @if (isset($user_name) && isset($user_name->profile) && $user_name->profile->avatar !== null)
-                {{-- @dd($user_name->profile) --}}
                 @php
                     // تحليل قيمة avatar (JSON) لاسترداد اسم الملف
                     $avatarData = json_decode($user_name->profile->avatar);
@@ -55,7 +53,12 @@
                     <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id . '/images/profile/' . $filename) }}"
                         alt="Avatar Photo" class="profile-photo1">
                 @else
-                    <img src="{{ asset('images/undraw_profile.svg') }}" class="profile-photo1" alt="شعار" />
+                    @if ($user_name->gender == 'male')
+                        <img src="{{ asset('images/avatar6.png') }}" alt class="w-100 h-100">
+                    @else
+                        <img src="{{ asset('images/avatar3.png') }}" alt class="w-100 h-100">
+                    @endif
+                    {{-- <img src="{{ asset('images/undraw_profile.svg') }}" class="profile-photo1" alt="شعار" /> --}}
                 @endif
             @else
                 {{-- لا تظهر الصورة إذا كان المستخدم غير مسجل أو ليس له صورة شخصية --}}
