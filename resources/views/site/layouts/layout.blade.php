@@ -1,4 +1,3 @@
-{{-- @dd($user_name->profile) --}}
 <!doctype html>
 <html lang="en">
 
@@ -13,6 +12,9 @@
     <link rel="stylesheet" href="{{ asset('css/swiper-bundle.min.css') }}">
     <link rel="stylesheet" href="{{ asset('fontawesome/css/all.css') }}">
     <link rel="stylesheet" href="{{ asset('css/site.css') }}">
+    {{-- ايقونات اضافة ازالة...صديق --}}
+    <link rel="stylesheet" href="{{ asset('css/all.min.css') }}">
+    {{-- ---------------------------- --}}
     <link rel="stylesheet" href="{{ asset('filepond/filepond.min.css') }}">
 
     <script src="{{ asset('filepond/filepond.min.js') }}"></script>
@@ -44,7 +46,6 @@
         <a class="navbar-brand" href="{{ url('/') }}">
             {{-- @dd($user_name) --}}
             @if (isset($user_name) && isset($user_name->profile) && $user_name->profile->avatar !== null)
-                {{-- @dd($user_name->profile) --}}
                 @php
                     // تحليل قيمة avatar (JSON) لاسترداد اسم الملف
                     $avatarData = json_decode($user_name->profile->avatar);
@@ -54,8 +55,21 @@
                 @if ($filename)
                     <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id . '/images/profile/' . $filename) }}"
                         alt="Avatar Photo" class="profile-photo1">
+                    <a href="{{ route('user.profile', Auth::user()->id) }}" class="nav-link">
+                        {{ Auth::user()->name }}
+                    </a>
                 @else
-                    <img src="{{ asset('images/undraw_profile.svg') }}" class="profile-photo1" alt="شعار" />
+                    @if ($user_name->gender == 'male')
+                        <img src="{{ asset('images/avatar6.png') }}" alt class="w-100 h-100">
+                        <a href="{{ route('user.profile', Auth::user()->id) }}" class="nav-link">
+                            {{ Auth::user()->name }}
+                        </a>
+                    @else
+                        <img src="{{ asset('images/avatar3.png') }}" alt class="w-100 h-100">
+                        <a href="{{ route('user.profile', Auth::user()->id) }}" class="nav-link">
+                            {{ Auth::user()->name }}
+                        </a>
+                    @endif
                 @endif
             @else
                 {{-- لا تظهر الصورة إذا كان المستخدم غير مسجل أو ليس له صورة شخصية --}}
@@ -82,7 +96,7 @@
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item mx-3">
                     <a href="{{ route('user.profile', Auth::user()->id) }}" class="nav-link">
-                        {{ $user_name->profile->name }}
+                        {{ Auth::user()->name }}
                     </a>
                 </li>
                 <li class="nav-item mx-3">

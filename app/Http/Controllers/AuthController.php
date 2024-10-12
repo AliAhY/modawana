@@ -34,12 +34,14 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             'email_verified_at' => now(),
             'remember_token' => Str::random(60),
-            'gender' => $request->gender, // إضافة الجنس إلى بيانات المستخدم
+            'gender' => $request->gender,
         ]);
 
         $user->profile()->create([
             'name' => $request->username,
             'email' => $request->email,
+            'gender' => $request->gender, 
+
         ]);
 
         // تجديد الجلسة  

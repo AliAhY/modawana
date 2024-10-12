@@ -7,15 +7,21 @@ use App\Models\Profile;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use App\Models\Friend;
+use App\Models\FriendRequest;
+use App\Notifications\FriendRequestNotification;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller
 {
     public function profile($id)
     {
         $user_name = User::where('id', $id)->with('profile')->first();
-        return view('site.profile.index', compact('user_name'));
+        $activeTab = 'Profile';
+        return view('site.profile.index', compact('user_name', 'activeTab'));
     }
 
     public function edit_profile_form($id)
@@ -78,8 +84,6 @@ class ProfileController extends Controller
             return back()->withErrors(['error' => 'Something happened: ' . $e->getMessage()]);
         }
     }
-
-
 
     public function upload_profile_photo(Request $request, $id)
     {
@@ -144,11 +148,160 @@ class ProfileController extends Controller
         return response()->json(['filename' => $filename], 200);
     }
 
-    public function store_post(Request $request)
+
+    public function show_other($name, $id)
     {
-        $comment = new Comment();
-        $comment->content = $request->input('content');
-        $comment->save();
-        return response()->json(['message' => 'Comment saved successfully'],200);
+        $other_profile = Profile::where('id', $id)->where('name', $name)->first();
+        // استرجاع المستخدم الحالي
+        $currentProfile = auth()->user()->profile; // تأكد من أن لديك علاقة صحيحة للحصول على الملف الشخصي للمستخدم الحالي
+        // return $currentProfile;
+        // تحقق مما إذا كانت الصداقة موجودة
+        $isFriend = DB::table('friends')
+            ->where('profile_id', $currentProfile->id)
+            ->where('friend_profile_id', $other_profile->id)
+            ->exists();
+        $activeTab = 'Profile';
+        return view('site.profile.other_profile', compact('other_profile', 'currentProfile', 'isFriend', 'activeTab'));
+    }
+
+    public function friends_of_other($name, $id)
+    {
+        // return $name;
+        $other_profile = Profile::where('id', $id)->where('name', $name)->first();
+        $currentProfile = auth()->user()->profile;
+        $activeTab = 'Friends';
+        $friend_of_other = Friend::where('profile_id', $id)->get();
+        // return $friend_of_other;
+        return view('site.profile.frindes_of_other', compact('other_profile', 'currentProfile','activeTab', 'friend_of_other'));
+    }
+
+
+    public function acceptFriendRequest($requestId)
+    {
+        $request = FriendRequest::findOrFail($requestId);
+        // إضافة الصديق
+        Friend::create([
+            'profile_id' => $request->recipient_profile_id,
+            'friend_profile_id' => $request->sender_profile_id,
+        ]);
+        Friend::create([
+            'profile_id' => $request->sender_profile_id,
+            'friend_profile_id' => $request->recipient_profile_id,
+        ]);
+        // حذف طلب الصداقة
+        $request->delete();
+        return back()->with('success', 'تم قبول طلب الصداقة.');
+    }
+
+
+    public function rejectFriendRequest($requestId)
+    {
+        // return $requestId;
+        // العثور على طلب الصداقة باستخدام المعرف
+        $friendRequest = FriendRequest::find($requestId);
+        // التحقق مما إذا كان طلب الصداقة موجودًا
+        if (!$friendRequest) {
+            return response()->json(['message' => 'طلب الصداقة غير موجود.'], 404);
+        }
+        // التحقق مما إذا كان المستلم هو المستخدم الحالي قبل رفض الطلب
+        if ($friendRequest->recipient_profile_id != auth()->user()->id) {
+            return response()->json(['message' => 'ليس لديك إذن لرفض هذا الطلب.'], 403);
+        }
+        // حذف طلب الصداقة (أو يمكنك تغيير الحالة إذا كنت تحتفظ بها)
+        $friendRequest->delete();
+        // إرجاع استجابة ناجحة
+        return redirect()->back()->with('success', 'تم رفض الصداقة بنجاح.');
+    }
+
+
+    public function showFriendRequests($id)
+    {
+        $friendRequests = FriendRequest::where('recipient_profile_id', $id)->get();
+        $num_of_frind_req = FriendRequest::where('recipient_profile_id', $id)->count();
+        $activeTab = 'Friends Request';
+        return view('site.profile.Friendes.addRequest', compact('friendRequests', 'num_of_frind_req', 'activeTab'));
+    }
+    public function showFriends($id)
+    {
+        $friendRequests = Friend::where('profile_id', $id)->get();
+        $num_of_frind = Friend::where('profile_id', $id)->count();
+        $activeTab = 'Friends';
+        return view('site.profile.Friendes.friendes', compact('friendRequests', 'num_of_frind', 'activeTab'));
+    }
+
+    public function AllAddsFriends($id)
+    {
+        $all_friends_adds = FriendRequest::where('sender_profile_id', $id)->get();
+        $num_of_frinds_add = FriendRequest::where('sender_profile_id', $id)->count();
+        $activeTab = 'Add Friends';
+        return view('site.profile.Friendes.addSend', compact('all_friends_adds','num_of_frinds_add', 'activeTab'));
+    }
+
+
+    public function sendFriendRequest(Request $request, $recipientId)
+    {
+        if (!auth()->check()) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $senderProfile = auth()->user()->profile;
+        if (!$senderProfile) {
+            return response()->json(['error' => 'Profile not found'], 404);
+        }
+
+        $recipientProfile = Profile::findOrFail($recipientId);
+
+        // تحقق مما إذا كان الطلب موجودًا بالفعل  
+        if (FriendRequest::where('sender_profile_id', $senderProfile->id)
+            ->where('recipient_profile_id', $recipientProfile->id)
+            ->exists()
+        ) {
+            return response()->json(['error' => 'Friend request already exists.'], 400);
+        }
+
+        // تخزين طلب الصداقة  
+        FriendRequest::create([
+            'sender_profile_id' => $senderProfile->id,
+            'recipient_profile_id' => $recipientProfile->id,
+        ]);
+
+        // إرسال الإشعار  
+        $recipientProfile->notify(new FriendRequestNotification($senderProfile));
+
+        return back()->with('success', 'Friend request sent successfully.')->with('friend_id', $recipientProfile->id);
+    }
+
+    public function cancelFriendRequest(Request $request, $recipientId)
+    {
+        $senderProfile = auth()->user()->profile;
+        if (!$senderProfile) {
+            return response()->json(['error' => 'Profile not found'], 404);
+        }
+
+        $recipientProfile = Profile::findOrFail($recipientId);
+
+        // البحث عن طلب الصداقة وإزالته  
+        $friendRequest = FriendRequest::where('sender_profile_id', $senderProfile->id)
+            ->where('recipient_profile_id', $recipientProfile->id)
+            ->first();
+
+        if ($friendRequest) {
+            $friendRequest->delete();
+            return back()->with('success', 'Friend request canceled successfully.')->with('friend_id', $recipientProfile->id);
+        }
+
+        return back()->with('error', 'No friend request found to cancel.');
+    }
+
+    public function removeFriend($id)
+    {
+        $currentProfile = auth()->user()->profile;
+        $otherProfile = Profile::findOrFail($id);
+
+        // إلغاء الصداقة من كلا الجانبين  
+        $currentProfile->friends()->detach($otherProfile->id);
+        $otherProfile->friends()->detach($currentProfile->id); // إزالة الصداقة من الجانب الآخر  
+
+        return redirect()->back()->with('success', 'تم إلغاء الصداقة بنجاح.');
     }
 }

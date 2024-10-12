@@ -8,7 +8,13 @@
                     <div class="article border rounded-lg shadow-lg overflow-hidden">
                         <div class="image-container">
                             @if ($profile->avatar == null)
-                                <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt class="w-100 h-100">
+                                {{-- @dd($profile->gender) --}}
+                                {{-- <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt class="w-100 h-100"> --}}
+                                @if ($profile->user->gender == 'male')
+                                    <img src="{{ asset('images/avatar6.png') }}" alt class="w-100 h-100">
+                                @else
+                                    <img src="{{ asset('images/avatar3.png') }}" alt class="w-100 h-100">
+                                @endif
                             @else
                                 @php
                                     // تحليل قيمة avatar (JSON) لاسترداد اسم الملف
@@ -22,7 +28,14 @@
                         </div>
                         <div class="text p-4" style="text-align: center">
                             <a href="#" class="text-blue-600 hover:underline">
-                                {{-- <h4 class="text-lg font-semibold"><a href="{{route('profile.other', $profile->name)}}">{{ $profile->name }}</a></h4> --}}
+                                <h4 class="text-lg font-semibold">
+                                    @if (Auth::check())
+                                        <a
+                                            href="{{ route('profile.other', [$profile->name, $profile->id]) }}">{{ $profile->name }}</a>
+                                    @else
+                                        <a href="{{ route('login') }}">{{ $profile->name }}</a>
+                                    @endif
+                                </h4>
                             </a>
                             <p class="text-gray-600 text-sm"><span class="font-medium">{{ $profile->name }}</span></p>
                         </div>

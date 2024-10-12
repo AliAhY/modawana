@@ -135,22 +135,30 @@
     </head>
 
     <body>
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+
+
         <div class="container">
             <div class="card overflow-hidden">
                 <div class="card-body p-0">
 
-                    @if ($user_name->profile->cover_image == null)
+                    @if ($other_profile->cover_image == null)
                         <img src="https://www.bootdey.com/image/1352x300/FF7F50/000000" alt class="img-fluid cover-image">
                     @else
                         @php
                             // تحليل قيمة avatar (JSON) لاسترداد اسم الملف
-                            $cover_imageData = json_decode($user_name->profile->cover_image);
+                            $cover_imageData = json_decode($other_profile->cover_image);
                             $filename = $cover_imageData->filename ?? null; // التأكد من وجود البيانات
                         @endphp
 
                         @if ($filename)
-                            <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id . '/images/cover/' . $filename) }}"
+                            <img src="{{ url('/storage/media/users/User_ID_' . $other_profile->user_id . '/images/cover/' . $filename) }}"
                                 alt="Cover Photo" class="img-fluid cover-image">
                         @else
                             <img src="https://www.bootdey.com/image/1352x300/FF7F50/000000" alt
@@ -186,29 +194,46 @@
                                         <div class="border border-4 border-white d-flex align-items-center justify-content-center rounded-circle overflow-hidden"
                                             style="width: 100px; height: 100px;" ;>
 
-                                            @if ($user_name->profile->avatar == null)
-                                                @if ($user_name->gender == 'male')
+                                            @if ($other_profile->avatar == null)
+                                                @if ($other_profile->user->gender == 'male')
                                                     <img src="{{ asset('images/avatar6.png') }}" alt class="w-100 h-100">
                                                 @else
                                                     <img src="{{ asset('images/avatar3.png') }}" alt class="w-100 h-100">
                                                 @endif
                                             @else
                                                 @php
-                                                    // تحليل قيمة avatar (JSON) لاسترداد اسم الملف
-                                                    $avatarData = json_decode($user_name->profile->avatar);
-                                                    $filename = $avatarData->filename ?? null; // التأكد من وجود البيانات
+                                                    $avatarData = json_decode($other_profile->avatar);
+                                                    $filename = $avatarData->filename ?? null;
                                                 @endphp
-
-                                                {{-- @if ($filename) --}}
-                                                <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id . '/images/profile/' . $filename) }}"
+                                                <img src="{{ url('/storage/media/users/User_ID_' . $other_profile->user_id . '/images/profile/' . $filename) }}"
                                                     alt="Avatar Photo" class="w-100 h-100">
                                             @endif
                                         </div>
                                     </div>
                                 </div>
                                 <div class="text-center">
-                                    <h5 class="fs-5 mb-0 fw-semibold">{{ $user_name->profile->name }}</h5>
-                                    <p class="mb-0 fs-4">{{ $user_name->profile->bio }}</p>
+                                    <h5 class="fs-5 mb-0 fw-semibold">{{ $other_profile->name }}</h5>
+                                    <p class="mb-0 fs-4">{{ $other_profile->bio }}</p>
+                                    <div class="d-flex justify-content-between mt-3">
+                                        @if ($currentProfile->receivedFriendRequests()->where('sender_profile_id', $other_profile->id)->exists())
+                                            <form
+                                                action="{{ route('friend.request.reject',$currentProfile->receivedFriendRequests()->where('sender_profile_id', $other_profile->id)->first()->id) }}"
+                                                method="POST">
+                                                @csrf
+                                                <button class="btn btn-danger" type="submit">
+                                                    <i class="fas fa-user-times"></i> رفض
+                                                </button>
+                                            </form>
+                                            <form
+                                                action="{{ route('friend.request.accept',$currentProfile->receivedFriendRequests()->where('sender_profile_id', $other_profile->id)->first()->id) }}"
+                                                method="POST" style="display:inline;">
+                                                @csrf
+                                                <button type="submit" class="btn btn-primary pull-right">
+                                                    <i class="fas fa-user-plus"></i> قبول
+                                                </button>
+                                            </form>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -239,55 +264,59 @@
                                         <i class="fa fa-youtube"></i>
                                     </a>
                                 </li>
-                                <li><a href="{{ route('user.edit_profile_form', $user_name->profile->id) }}"><button
-                                            class="btn btn-primary">Edit Profile</button></a></li>
-
                             </ul>
                         </div>
+
+
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        @if ($currentProfile->friends()->where('friend_profile_id', $other_profile->id)->exists())
+                            <form action="{{ route('friend.request.remove', $other_profile->id) }}" method="POST">
+                                @csrf
+                                <button class="btn btn-danger" type="submit">
+                                    <i class="fas fa-user-minus"></i> إلغاء الصداقة
+                                </button>
+                            </form>
+                        @elseif ($currentProfile->sentFriendRequests()->where('recipient_profile_id', $other_profile->id)->exists())
+                            <form action="{{ route('friend.request.cancel', $other_profile->id) }}" method="POST">
+                                @csrf
+                                <button class="btn btn-info" type="submit">
+                                    <i class="fas fa-times-circle"></i> إلغاء الطلب
+                                </button>
+                            </form>
+                        @elseif ($currentProfile->receivedFriendRequests()->where('sender_profile_id', $other_profile->id)->exists())
+                            {{-- هنا يجب تركه فارغ ليتحقق الشرط الخاص بالقبول والرفض بالاعلى --}}
+                        @else
+                            <form action="{{ route('friend.request.send', $other_profile->id) }}" method="POST">
+                                @csrf
+                                <button class="btn btn-success" type="submit">
+                                    <i class="fas fa-user-plus"></i> إضافة صديق
+                                </button>
+                            </form>
+                        @endif
                     </div>
                     <ul class="nav nav-pills user-profile-tab justify-content-end mt-2 bg-light-info rounded-2"
                         id="pills-tab" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <a href="{{ route('user.profile', $user_name->profile->id) }}">
+                            <a href="{{ route('profile.other', [$other_profile->name, $other_profile->id]) }}">
                                 <button
                                     class="nav-link position-relative rounded-0 {{ $activeTab === 'Profile' ? 'active' : '' }} d-flex align-items-center justify-content-center bg-transparent fs-3 py-6"
                                     id="pills-friends-tab">
                                     <i class="fas fa-user-friends me-2 fs-6"></i>
                                     <span class="d-none d-md-block">Profile</span>
                                 </button>
-
                         </li>
                         <li class="nav-item" role="presentation">
                             <button
                                 class="nav-link position-relative rounded-0 d-flex align-items-center justify-content-center bg-transparent fs-3 py-6"
-                                id="pills-followers-tab">
+                                {{-- class="nav-link position-relative rounded-0 {{ $activeTab === 'Followers' ? 'active' : '' }} d-flex align-items-center justify-content-center bg-transparent fs-3 py-6" --}} id="pills-followers-tab">
                                 <i class="fa fa-heart me-2 fs-6"></i>
                                 <span class="d-none d-md-block">Followers</span>
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a href="{{ route('profile.friendes', $user_name->profile->id) }}">
-                                <button
-                                    class="nav-link position-relative rounded-0 {{ $activeTab === 'Friends Request' ? 'active' : '' }} d-flex align-items-center justify-content-center bg-transparent fs-3 py-6"
-                                    id="pills-friends-tab">
-                                    <i class="fas fa-users me-2 fs-6"></i> <!-- أيقونة جديدة لطلبات الأصدقاء المستقبلة -->
-                                    <span class="d-none d-md-block">Friends Request</span>
-                                </button>
-                            </a>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <a href="{{ route('profile.AllAddsFriends', $user_name->profile->id) }}">
-                                <button
-                                    class="nav-link position-relative rounded-0 {{ $activeTab === 'Add Friends' ? 'active' : '' }} d-flex align-items-center justify-content-center bg-transparent fs-3 py-6"
-                                    id="pills-friends-tab">
-                                    <i class="fas fa-paper-plane me-2 fs-6"></i>
-                                    <!-- أيقونة جديدة لطلبات الصداقة المرسلة -->
-                                    <span class="d-none d-md-block">Add Friends</span>
-                                </button>
-                            </a>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <a href="{{ route('profile.allfriendes', $user_name->profile->id) }}">
+                            <a href="{{ route('profile.other.friends', [$other_profile->name, $other_profile->id]) }}">
                                 <button
                                     class="nav-link position-relative rounded-0 {{ $activeTab === 'Friends' ? 'active' : '' }} d-flex align-items-center justify-content-center bg-transparent fs-3 py-6"
                                     id="pills-friends-tab">
@@ -316,64 +345,65 @@
                             <div class="card shadow-none border">
                                 <div class="card-body">
                                     <h4 class="fw-semibold mb-3">Introduction</h4>
-                                    <p>Hello, I am Mathew Anderson. I love making websites and graphics. Lorem ipsum dolor
+                                    <p>Hello, I am Mathew Anderson. I love making websites and graphics. Lorem ipsum
+                                        dolor
                                         sit amet, consectetur adipiscing elit.</p>
                                     <ul class="list-unstyled mb-0">
-                                        @if (!empty($user_name->profile->professional_title))
+                                        @if (!empty($other_profile->professional_title))
                                             <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
                                             <li class="d-flex align-items-center gap-3 mb-4">
                                                 <i class="fa fa-briefcase text-dark fs-6"></i>
                                                 <h6 class="fs-4 fw-semibold mb-0">
-                                                    {{ $user_name->profile->professional_title }}
+                                                    {{ $other_profile->professional_title }}
                                                 </h6>
                                             </li>
                                         @endif
-                                        @if (!empty($user_name->profile->email))
+                                        @if (!empty($other_profile->email))
                                             <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
                                             <li class="d-flex align-items-center gap-3 mb-4">
                                                 <i class="fa fa-envelope text-dark fs-6"></i>
                                                 <h6 class="fs-4 fw-semibold mb-0"><a href="/cdn-cgi/l/email-protection"
                                                         class="__cf_email__"
-                                                        data-cfemail="39414043535657584d515857795e54585055175a5654">{{ $user_name->profile->email }}</a>
+                                                        data-cfemail="39414043535657584d515857795e54585055175a5654">{{ $other_profile->email }}</a>
                                                 </h6>
                                             </li>
                                         @endif
-                                        @if (!empty($user_name->profile->universe_name))
+                                        @if (!empty($other_profile->universe_name))
                                             <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
                                             <li class="d-flex align-items-center gap-3 mb-4">
                                                 <i class="fa fa-graduation-cap text-dark fs-6"></i>
-                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->universe_name }}
+                                                <h6 class="fs-4 fw-semibold mb-0">{{ $other_profile->universe_name }}
                                                 </h6>
                                             </li>
                                         @endif
-                                        @if (!empty($user_name->profile->school_name))
+                                        @if (!empty($other_profile->school_name))
                                             <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
                                             <li class="d-flex align-items-center gap-3 mb-4">
                                                 <i class="fa fa-graduation-cap text-dark fs-6"></i>
-                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->school_name }}
+                                                <h6 class="fs-4 fw-semibold mb-0">{{ $other_profile->school_name }}
                                                 </h6>
                                             </li>
                                         @endif
-                                        @if (!empty($user_name->profile->location))
+                                        @if (!empty($other_profile->location))
                                             <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
                                             <li class="d-flex align-items-center gap-3 mb-4">
                                                 <i class="fa fa-home text-dark fs-6"></i>
-                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->location }}</h6>
+                                                <h6 class="fs-4 fw-semibold mb-0">{{ $other_profile->location }}</h6>
                                             </li>
                                         @endif
-                                        @if (!empty($user_name->profile->date_of_birth))
+                                        @if (!empty($other_profile->date_of_birth))
                                             <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
                                             <li class="d-flex align-items-center gap-3 mb-4">
                                                 <i class="fa fa-birthday-cake text-dark fs-6"></i>
-                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->date_of_birth }}
+                                                <h6 class="fs-4 fw-semibold mb-0">{{ $other_profile->date_of_birth }}
                                                 </h6>
                                             </li>
                                         @endif
-                                        @if (!empty($user_name->profile->gender))
+                                        @if (!empty($other_profile->gender))
                                             <!-- عرض عنصر li إذا كانت البيانات غير فارغة -->
                                             <li class="d-flex align-items-center gap-3 mb-4">
                                                 <i class="fa fa-user text-dark fs-6"></i>
-                                                <h6 class="fs-4 fw-semibold mb-0">{{ $user_name->profile->gender }}</h6>
+                                                <h6 class="fs-4 fw-semibold mb-0">{{ $other_profile->gender }}</h6>
                                             </li>
                                         @endif
                                     </ul>
@@ -391,12 +421,40 @@
                                             <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt
                                                 class="rounded-2 img-fluid mb-9">
                                         </div>
+                                        <div class="col-4">
+                                            <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt
+                                                class="rounded-2 img-fluid mb-9">
+                                        </div>
+                                        <div class="col-4">
+                                            <img src="https://bootdey.com/img/Content/avatar/avatar4.png" alt
+                                                class="rounded-2 img-fluid mb-9">
+                                        </div>
+                                        <div class="col-4">
+                                            <img src="https://bootdey.com/img/Content/avatar/avatar4.png" alt
+                                                class="rounded-2 img-fluid mb-9">
+                                        </div>
+                                        <div class="col-4">
+                                            <img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt
+                                                class="rounded-2 img-fluid mb-9">
+                                        </div>
+                                        <div class="col-4">
+                                            <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt
+                                                class="rounded-2 img-fluid mb-6">
+                                        </div>
+                                        <div class="col-4">
+                                            <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt
+                                                class="rounded-2 img-fluid mb-6">
+                                        </div>
+                                        <div class="col-4">
+                                            <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt
+                                                class="rounded-2 img-fluid mb-6">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-8">
-                            <div class="card shadow-none border">
+                            {{-- <div class="card shadow-none border">
                                 <div class="card-body">
                                     <div class="form-floating mb-3">
                                         <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 137px"></textarea>
@@ -418,7 +476,7 @@
                                         <button class="btn btn-primary ms-auto">Post</button>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="card">
                                 <div class="card-body border-bottom">
                                     <div class="d-flex align-items-center gap-3">
@@ -465,13 +523,15 @@
                                                     class="rounded-circle" width="33" height="33">
                                                 <h6 class="fw-semibold mb-0 fs-4">Deran Mac</h6>
                                                 <span class="fs-2"><span
-                                                        class="p-1 bg-muted rounded-circle d-inline-block"></span> 8 min
+                                                        class="p-1 bg-muted rounded-circle d-inline-block"></span> 8
+                                                    min
                                                     ago</span>
                                             </div>
                                             <p class="my-3">Lufo zizrap iwofapsuk pusar luc jodawbac zi op uvezojroj
                                                 duwage
                                                 vuhzoc ja vawdud le furhez siva
-                                                fikavu ineloh. Zot afokoge si mucuve hoikpaf adzuk zileuda falohfek zoije
+                                                fikavu ineloh. Zot afokoge si mucuve hoikpaf adzuk zileuda falohfek
+                                                zoije
                                                 fuka udune lub annajor gazo
                                                 conis sufur gu.
                                             </p>
@@ -500,11 +560,13 @@
                                                     class="rounded-circle" width="33" height="33">
                                                 <h6 class="fw-semibold mb-0 fs-4">Jonathan Bg</h6>
                                                 <span class="fs-2"><span
-                                                        class="p-1 bg-muted rounded-circle d-inline-block"></span> 5 min
+                                                        class="p-1 bg-muted rounded-circle d-inline-block"></span> 5
+                                                    min
                                                     ago</span>
                                             </div>
                                             <p class="my-3">
-                                                Zumankeg ba lah lew ipep tino tugjekoj hosih fazjid wotmila durmuri buf hi
+                                                Zumankeg ba lah lew ipep tino tugjekoj hosih fazjid wotmila durmuri buf
+                                                hi
                                                 sigapolu joit ebmi joge vo.
                                                 Horemo vogo hat na ejednu sarta afaamraz zi cunidce peroido suvan podene
                                                 igneve.
@@ -538,7 +600,8 @@
                                                     now</span>
                                             </div>
                                             <p class="my-3">
-                                                Olte ni somvukab ugura ovaobeco hakgoc miha peztajo tawosu udbacas kismakin
+                                                Olte ni somvukab ugura ovaobeco hakgoc miha peztajo tawosu udbacas
+                                                kismakin
                                                 hi. Dej
                                                 zetfamu cevufi sokbid bud mun soimeuha pokahram vehurpar keecris pepab
                                                 voegmud
@@ -566,7 +629,8 @@
                                             now</span>
                                     </div>
                                     <p class="text-dark my-3">
-                                        Pucnus taw set babu lasufot lawdebuw nem ig bopnub notavfe pe ranlu dijsan liwfekaj
+                                        Pucnus taw set babu lasufot lawdebuw nem ig bopnub notavfe pe ranlu dijsan
+                                        liwfekaj
                                         lo az. Dom giat gu
                                         sehiosi bikelu lo eb uwrerej bih woppoawi wijdiola iknem hih suzega gojmev kir
                                         rigoj.
@@ -661,9 +725,11 @@
                                                 ago</span>
                                         </div>
                                         <p class="my-3">
-                                            Hintib cojno riv ze heb cipcep fij wo tufinpu bephekdab infule pajnaji. Jiran
+                                            Hintib cojno riv ze heb cipcep fij wo tufinpu bephekdab infule pajnaji.
+                                            Jiran
                                             goetimip muovo go en
-                                            gaga zeljomim hozlu lezuvi ehkapod dec bifoom hag dootasac odo luvgit ti ella.
+                                            gaga zeljomim hozlu lezuvi ehkapod dec bifoom hag dootasac odo luvgit ti
+                                            ella.
                                         </p>
                                         <div class="d-flex align-items-center">
                                             <div class="d-flex align-items-center gap-2">
