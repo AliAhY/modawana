@@ -29,12 +29,8 @@
                         <div class="text p-4" style="text-align: center">
                             <a href="#" class="text-blue-600 hover:underline">
                                 <h4 class="text-lg font-semibold">
-                                    @if (Auth::check())
-                                        <a
-                                            href="{{ route('profile.other', [$profile->name, $profile->id]) }}">{{ $profile->name }}</a>
-                                    @else
-                                        <a href="{{ route('login') }}">{{ $profile->name }}</a>
-                                    @endif
+                                    <a
+                                        href="{{ route('profile.other', [$profile->name, $profile->id]) }}">{{ $profile->name }}</a>
                                 </h4>
                             </a>
                             <p class="text-gray-600 text-sm"><span class="font-medium">{{ $profile->name }}</span></p>

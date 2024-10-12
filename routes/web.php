@@ -29,24 +29,24 @@ Route::group([
 });
 
 Route::get('/', [UserController::class, 'index'])->name('index.user');
+// مجموعة المسارات المحمية بـ 'auth'  
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile/{id}', [ProfileController::class, 'profile'])->name('user.profile');
+    Route::get('/edit_profile_form/{id}', [ProfileController::class, 'edit_profile_form'])->name('user.edit_profile_form');
+    Route::post('/upload/profile/{id}', [ProfileController::class, 'upload_profile_photo'])->name('upload.profile');
+    Route::post('/upload/profile_cover/{id}', [ProfileController::class, 'upload_profile_cover'])->name('upload.cover');
+    Route::put('/update_profile/{id}', [ProfileController::class, 'update_profile'])->name('update.profile');
 
-// Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
-Route::get('/profile/{id}', [ProfileController::class, 'profile'])->name('user.profile');
-Route::get('/edit_profile_form/{id}', [ProfileController::class, 'edit_profile_form'])->name('user.edit_profile_form');
-Route::post('/upload/profile/{id}', [ProfileController::class, 'upload_profile_photo'])->name('upload.profile');
-Route::post('/upload/profile_cover/{id}', [ProfileController::class, 'upload_profile_cover'])->name('upload.cover');
-Route::put('/update_profile/{id}', [ProfileController::class, 'update_profile'])->name('update.profile');
+    Route::post('/send-friend-request/{recipientId}', [ProfileController::class, 'sendFriendRequest'])->name('friend.request.send');
+    Route::post('/cancel-friend-request/{recipientId}', [ProfileController::class, 'cancelFriendRequest'])->name('friend.request.cancel');
+    Route::post('/accept-friend-request/{requestId}', [ProfileController::class, 'acceptFriendRequest'])->name('friend.request.accept');
+    Route::post('/friend/remove/{id}', [ProfileController::class, 'removeFriend'])->name('friend.request.remove');
+    Route::post('/friend-request/reject/{requestId}', [ProfileController::class, 'rejectFriendRequest'])->name('friend.request.reject');
+    Route::get('/profile/friends/friends_requests/{id}', [ProfileController::class, 'showFriendRequests'])->name('profile.friendes');
+    Route::get('/profile/friends/all_friends/{id}', [ProfileController::class, 'showFriends'])->name('profile.allfriendes');
+    Route::get('/profile/friends/all_add_friendes/{id}', [ProfileController::class, 'AllAddsFriends'])->name('profile.AllAddsFriends');
 
+    Route::get('/profile/{name}/{id}', [ProfileController::class, 'show_other'])->name('profile.other');
+    Route::get('/profile/all_friends_of/{name}/{id}', [ProfileController::class, 'friends_of_other'])->name('profile.other.friends');
+});
 
-Route::post('/send-friend-request/{recipientId}', [ProfileController::class, 'sendFriendRequest'])->name('friend.request.send');
-Route::post('/cancel-friend-request/{recipientId}', [ProfileController::class, 'cancelFriendRequest'])->name('friend.request.cancel');
-Route::post('/accept-friend-request/{requestId}', [ProfileController::class, 'acceptFriendRequest'])->name('friend.request.accept');
-Route::post('/friend/remove/{id}', [ProfileController::class, 'removeFriend'])->name('friend.request.remove');  
-Route::post('/friend-request/reject/{requestId}', [ProfileController::class, 'rejectFriendRequest'])->name('friend.request.reject');
-Route::get('/profile/friends/friends_requests/{id}', [ProfileController::class, 'showFriendRequests'])->name('profile.friendes');
-Route::get('/profile/friends/all_friends/{id}', [ProfileController::class, 'showFriends'])->name('profile.allfriendes');
-Route::get('/profile/friends/all_add_friendes/{id}', [ProfileController::class, 'AllAddsFriends'])->name('profile.AllAddsFriends');
-
-// Visit Profile For Another Person
-Route::get('/profile/{name}/{id}', [ProfileController::class, 'show_other'])->name('profile.other');
-Route::get('/profile/all_friends_of/{name}/{id}', [ProfileController::class, 'friends_of_other'])->name('profile.other.friends');
