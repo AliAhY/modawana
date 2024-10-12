@@ -9,11 +9,11 @@ class PostController extends Controller
 {
     // In your PostController.php file
 
-public function store(Request $request, string $id)
+    public function store(Request $request, string $id)
 {
     $request->validate([
         'content' => 'required',
-        'image' => 'nullable|file',
+        'image' => 'nullable|file|mimetypes:video/mp4,image/jpeg,image/png|max:1024000', // allow MP4 videos and JPEG/PNG images, max size 1GB
         'profile_id' => 'nullable|integer',
     ]);
 
@@ -21,10 +21,15 @@ public function store(Request $request, string $id)
     $post->content = $request->input('content');
 
     if ($request->hasFile('image')) {
-        $image = $request->file('image');
-        $imageName = time() . '.' . $image->getClientOriginalExtension();
-        $image->move(public_path('images'), $imageName);
-        $post->image = $imageName;
+        $file = $request->file('image');
+        $fileName = time() . '.' . $file->getClientOriginalExtension();
+        if ($file->getClientMimeType() == 'video/mp4') {
+            $file->move(public_path('videos'), $fileName);
+            $post->video = $fileName;
+        } else {
+            $file->move(public_path('images'), $fileName);
+            $post->image = $fileName;
+        }
     }
 
     $post->profile_id = $id;
@@ -32,4 +37,5 @@ public function store(Request $request, string $id)
 
     return view('site.profile.index')->with('success', 'Post created successfully!');
 }
+
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Comment;
+use App\Models\Post;
 use App\Models\Profile;
 use App\Models\User;
 use Exception;
@@ -15,7 +15,9 @@ class ProfileController extends Controller
     public function profile($id)
     {
         $user_name = User::where('id', $id)->with('profile')->first();
-        return view('site.profile.index', compact('user_name'));
+        $posts = Profile::where('user_id', $id)->with('post')->first();
+        // return $posts;
+        return view('site.profile.index', compact('user_name','posts'));
     }
 
     public function edit_profile_form($id)
