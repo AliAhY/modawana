@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Http\Request;
 use App\Models\Friend;
 use App\Models\FriendRequest;
+use App\Models\Post;
 use App\Notifications\FriendRequestNotification;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -20,8 +21,12 @@ class ProfileController extends Controller
     public function profile($id)
     {
         $user_name = User::where('id', $id)->with('profile')->first();
+        // استرجاع المنشورات الخاصة بالمستخدم  
+        $posts = Post::with('comments.profile')->where('profile_id', $id)->get(); // تأكد من أنك تستخدم profile_id بدلاً من id  
+
+        // إضافة بقية المتغيرات التي ترغب في تمريرها إلى العرض  
         $activeTab = 'Profile';
-        return view('site.profile.index', compact('user_name', 'activeTab'));
+        return view('site.profile.index', compact('user_name', 'activeTab', 'posts'));
     }
 
     public function edit_profile_form($id)
@@ -52,8 +57,8 @@ class ProfileController extends Controller
             ]);
 
             // إعداد مسار التخزين  
-            $user_name = $user->name;
-            $userDirectory = "public/media/users/$user_name/images/profile";
+            // $user_name = $user->name;
+            $userDirectory = "public/media/users/User_ID_$user->user_id/images/profile";
 
             // تحقق مما إذا كان هناك صورة جديدة للملف الشخصي  
             if ($request->hasFile('image')) {
@@ -172,7 +177,7 @@ class ProfileController extends Controller
         $activeTab = 'Friends';
         $friend_of_other = Friend::where('profile_id', $id)->get();
         // return $friend_of_other;
-        return view('site.profile.frindes_of_other', compact('other_profile', 'currentProfile','activeTab', 'friend_of_other'));
+        return view('site.profile.frindes_of_other', compact('other_profile', 'currentProfile', 'activeTab', 'friend_of_other'));
     }
 
 
@@ -234,7 +239,7 @@ class ProfileController extends Controller
         $all_friends_adds = FriendRequest::where('sender_profile_id', $id)->get();
         $num_of_frinds_add = FriendRequest::where('sender_profile_id', $id)->count();
         $activeTab = 'Add Friends';
-        return view('site.profile.Friendes.addSend', compact('all_friends_adds','num_of_frinds_add', 'activeTab'));
+        return view('site.profile.Friendes.addSend', compact('all_friends_adds', 'num_of_frinds_add', 'activeTab'));
     }
 
 

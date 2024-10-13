@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -48,5 +50,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/profile/{name}/{id}', [ProfileController::class, 'show_other'])->name('profile.other');
     Route::get('/profile/all_friends_of/{name}/{id}', [ProfileController::class, 'friends_of_other'])->name('profile.other.friends');
-});
 
+    Route::post('/posts/{id}', [PostController::class, 'store'])->name('posts.store');
+    Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+});
