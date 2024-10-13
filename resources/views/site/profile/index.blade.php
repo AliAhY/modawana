@@ -395,6 +395,7 @@
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="col-lg-8">
                             <div class="card shadow-none border">
                                 <div class="card-body">
