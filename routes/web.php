@@ -41,3 +41,4 @@ Route::put('/update_profile/{id}', [ProfileController::class, 'update_profile'])
 
 Route::post('/posts/{id}', [PostController::class, 'store'])->name('posts.store');
 Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+Route::delete('/posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');

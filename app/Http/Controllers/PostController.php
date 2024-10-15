@@ -38,4 +38,15 @@ class PostController extends Controller
     return view('site.profile.index')->with('success', 'Post created successfully!');
 }
 
+public function destroy(Request $request, $id)
+{
+    $post = Post::find($id);
+    if ($post) {
+        $post->delete();
+        return redirect()->back()->with('success', 'تم حذف البوست بنجاح!');
+    } else {
+        return redirect()->back()->with('error', 'لم يتم العثور على البوست!');
+    }
+}
+
 }

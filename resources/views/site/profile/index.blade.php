@@ -4,9 +4,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style type="text/css">
         /* body {
-                                                                                padding-top: 20px;
-                                                                                background: #dcdcdc;
-                                                                            } */
+                                                                                    padding-top: 20px;
+                                                                                    background: #dcdcdc;
+                                                                                } */
 
         .img-fluid {
             max-width: 100%;
@@ -472,6 +472,12 @@
                                                     data-bs-placement="top" data-bs-title="Share">
                                                     <i class="fa fa-share"></i>
                                                 </a>
+                                                <!-- Add delete button -->
+                                                <form action="{{ route('posts.destroy', $post->id) }}" method="post">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn btn-danger" type="submit">حذف</button>
+                                                </form>
                                             </div>
                                             <div class="position-relative">
                                                 <!-- تعليقات -->
