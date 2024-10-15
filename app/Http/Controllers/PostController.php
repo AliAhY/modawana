@@ -42,7 +42,11 @@ public function destroy(Request $request, $id)
 {
     $post = Post::find($id);
     if ($post) {
-        $post->delete();
+          // حذف التعليقات المرتبطة
+          $post->comments()->delete();
+        
+          // حذف البوست
+          $post->delete();
         return redirect()->back()->with('success', 'تم حذف البوست بنجاح!');
     } else {
         return redirect()->back()->with('error', 'لم يتم العثور على البوست!');
