@@ -453,361 +453,229 @@
                                 </div>
                             </div>
                         </div>
+
+
                         <div class="col-lg-8">
-                            {{-- <div class="card shadow-none border">
-                                <div class="card-body">
-                                    <div class="form-floating mb-3">
-                                        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 137px"></textarea>
-                                        <label for="floatingTextarea2" class="p-7">Share your thoughts</label>
-                                    </div>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <a class="text-white d-flex align-items-center justify-content-center bg-primary p-2 fs-4 rounded-circle"
-                                            href="javascript:void(0)">
-                                            <i class="fa fa-photo"></i>
-                                        </a>
-                                        <a href="javascript:void(0)" class="text-dark px-3 py-2">Photo / Video</a>
-                                        <a href="javascript:void(0)" class="d-flex align-items-center gap-2">
-                                            <div
-                                                class="text-white d-flex align-items-center justify-content-center bg-secondary p-2 fs-4 rounded-circle">
-                                                <i class="fa fa-list"></i>
-                                            </div>
-                                            <span class="text-dark">Article</span>
-                                        </a>
-                                        <button class="btn btn-primary ms-auto">Post</button>
-                                    </div>
-                                </div>
-                            </div> --}}
-                            <div class="card">
-                                <div class="card-body border-bottom">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt
-                                            class="rounded-circle" width="40" height="40">
-                                        <h6 class="fw-semibold mb-0 fs-4">Mathew Anderson</h6>
-                                        <span class="fs-2"><span
-                                                class="p-1 bg-light rounded-circle d-inline-block"></span>
-                                            15 min ago</span>
-                                    </div>
-                                    <p class="text-dark my-3">
-                                        Nu kek vuzkibsu mooruno ejepogojo uzjon gag fa ezik disan he nah. Wij wo pevhij
-                                        tumbug rohsa ahpi ujisapse lo vap labkez eddu suk.
-                                    </p>
-                                    <img src="https://www.bootdey.com/image/680x380/FF7F50/000000" alt
-                                        class="img-fluid rounded-4 w-100 object-fit-cover" style="height: 360px;">
-                                    <div class="d-flex align-items-center my-3">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <a class="text-white d-flex align-items-center justify-content-center bg-primary p-2 fs-4 rounded-circle"
-                                                href="javascript:void(0)" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" data-bs-title="Like">
-                                                <i class="fa fa-thumbs-up"></i>
-                                            </a>
-                                            <span class="text-dark fw-semibold">67</span>
-                                        </div>
-                                        <div class="d-flex align-items-center gap-2 ms-4">
-                                            <a class="text-white d-flex align-items-center justify-content-center bg-secondary p-2 fs-4 rounded-circle"
-                                                href="javascript:void(0)" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" data-bs-title="Comment">
-                                                <i class="fa fa-comments"></i>
-                                            </a>
-                                            <span class="text-dark fw-semibold">2</span>
-                                        </div>
-                                        <a class="text-dark ms-auto d-flex align-items-center justify-content-center bg-transparent p-2 fs-4 rounded-circle"
-                                            href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top"
-                                            data-bs-title="Share">
-                                            <i class="fa fa-share"></i>
-                                        </a>
-                                    </div>
-                                    <div class="position-relative">
-                                        <div class="p-4 rounded-2 bg-light mb-3">
+                            @if ($posts->isNotEmpty())
+                                @foreach ($posts as $post)
+                                    <div class="card">
+                                        <div class="card-body border-bottom">
                                             <div class="d-flex align-items-center gap-3">
-                                                <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt
-                                                    class="rounded-circle" width="33" height="33">
-                                                <h6 class="fw-semibold mb-0 fs-4">Deran Mac</h6>
+                                                @if ($other_profile->avatar == null)
+                                                    @if ($other_profile->gender == 'male')
+                                                        <img src="{{ asset('images/avatar6.png') }}" alt
+                                                            class="rounded-circle" width="40" height="40">
+                                                    @else
+                                                        <img src="{{ asset('images/avatar3.png') }}" alt
+                                                            class="rounded-circle" width="40" height="40">
+                                                    @endif
+                                                @else
+                                                    @php
+                                                        $avatarData = json_decode($other_profile->avatar);
+                                                        $filename = $avatarData->filename ?? null;
+                                                    @endphp
+                                                    <img src="{{ url('/storage/media/users/User_ID_' . $other_profile->user_id . '/images/profile/' . $filename) }}"
+                                                        alt="Post Image" class="rounded-circle" width="40"
+                                                        height="40">
+                                                @endif
+
+                                                <h6 class="fw-semibold mb-0 fs-4"> {{ $other_profile->name }}
+                                                </h6>
                                                 <span class="fs-2"><span
-                                                        class="p-1 bg-muted rounded-circle d-inline-block"></span> 8
-                                                    min
-                                                    ago</span>
+                                                        class="p-1 bg-light rounded-circle d-inline-block"></span>
+                                                    {{ $post->created_at }}</span>
                                             </div>
-                                            <p class="my-3">Lufo zizrap iwofapsuk pusar luc jodawbac zi op uvezojroj
-                                                duwage
-                                                vuhzoc ja vawdud le furhez siva
-                                                fikavu ineloh. Zot afokoge si mucuve hoikpaf adzuk zileuda falohfek
-                                                zoije
-                                                fuka udune lub annajor gazo
-                                                conis sufur gu.
+                                            <p class="text-dark my-3">
+                                                {{ $post->content }}
                                             </p>
-                                            <div class="d-flex align-items-center">
+                                            @if ($post->image)
+                                                <img src="{{ url('storage/media/users/User_ID_' . $post->profile_id . '/posts/Post_' . $post->id . '/images/' . basename($post->image)) }}"
+                                                    alt="Post Picture" class="img-fluid rounded-4 w-100 object-fit-cover"
+                                                    style="height: 360px;">
+                                            @elseif($post->video)
+                                                <video controls class="img-fluid rounded-4 w-100 object-fit-cover"
+                                                    style="height: 360px;">
+                                                    <source
+                                                        src="{{ url('storage/media/users/User_ID_' . $post->profile_id . '/posts/Post_' . $post->id . '/videos/' . basename($post->video)) }}"
+                                                        type="video/mp4">
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                            @endif
+                                            
+                                            <div class="d-flex align-items-center my-3">
                                                 <div class="d-flex align-items-center gap-2">
                                                     <a class="text-white d-flex align-items-center justify-content-center bg-primary p-2 fs-4 rounded-circle"
                                                         href="javascript:void(0)" data-bs-toggle="tooltip"
                                                         data-bs-placement="top" data-bs-title="Like">
                                                         <i class="fa fa-thumbs-up"></i>
                                                     </a>
-                                                    <span class="text-dark fw-semibold">55</span>
+                                                    <span class="text-dark fw-semibold">67</span>
                                                 </div>
                                                 <div class="d-flex align-items-center gap-2 ms-4">
                                                     <a class="text-white d-flex align-items-center justify-content-center bg-secondary p-2 fs-4 rounded-circle"
                                                         href="javascript:void(0)" data-bs-toggle="tooltip"
-                                                        data-bs-placement="top" data-bs-title="Reply">
-                                                        <i class="fa fa-arrow-up"></i>
+                                                        data-bs-placement="top" data-bs-title="Comment">
+                                                        <i class="fa fa-comments"></i>
                                                     </a>
-                                                    <span class="text-dark fw-semibold">0</span>
+                                                    <span
+                                                        class="text-dark fw-semibold">{{ $post->comments->count() }}</span>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="p-4 rounded-2 bg-light mb-3">
-                                            <div class="d-flex align-items-center gap-3">
-                                                <img src="https://bootdey.com/img/Content/avatar/avatar4.png" alt
-                                                    class="rounded-circle" width="33" height="33">
-                                                <h6 class="fw-semibold mb-0 fs-4">Jonathan Bg</h6>
-                                                <span class="fs-2"><span
-                                                        class="p-1 bg-muted rounded-circle d-inline-block"></span> 5
-                                                    min
-                                                    ago</span>
-                                            </div>
-                                            <p class="my-3">
-                                                Zumankeg ba lah lew ipep tino tugjekoj hosih fazjid wotmila durmuri buf
-                                                hi
-                                                sigapolu joit ebmi joge vo.
-                                                Horemo vogo hat na ejednu sarta afaamraz zi cunidce peroido suvan podene
-                                                igneve.
-                                            </p>
-                                            <div class="d-flex align-items-center">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <a class="text-dark d-flex align-items-center justify-content-center bg-light-dark p-2 fs-4 rounded-circle"
-                                                        href="javascript:void(0)" data-bs-toggle="tooltip"
-                                                        data-bs-placement="top" data-bs-title="Like">
-                                                        <i class="fa fa-thumbs-up"></i>
-                                                    </a>
-                                                    <span class="text-dark fw-semibold">68</span>
-                                                </div>
-                                                <div class="d-flex align-items-center gap-2 ms-4">
-                                                    <a class="text-white d-flex align-items-center justify-content-center bg-secondary p-2 fs-4 rounded-circle"
-                                                        href="javascript:void(0)" data-bs-toggle="tooltip"
-                                                        data-bs-placement="top" data-bs-title="Reply">
-                                                        <i class="fa fa-arrow-up"></i>
-                                                    </a>
-                                                    <span class="text-dark fw-semibold">1</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="p-4 rounded-2 bg-light ms-7">
-                                            <div class="d-flex align-items-center gap-3">
-                                                <img src="https://bootdey.com/img/Content/avatar/avatar5.png" alt
-                                                    class="rounded-circle" width="40" height="40">
-                                                <h6 class="fw-semibold mb-0 fs-4">Carry minati</h6>
-                                                <span class="fs-2"><span
-                                                        class="p-1 bg-muted rounded-circle d-inline-block"></span> just
-                                                    now</span>
-                                            </div>
-                                            <p class="my-3">
-                                                Olte ni somvukab ugura ovaobeco hakgoc miha peztajo tawosu udbacas
-                                                kismakin
-                                                hi. Dej
-                                                zetfamu cevufi sokbid bud mun soimeuha pokahram vehurpar keecris pepab
-                                                voegmud
-                                                zundafhef hej pe.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center gap-3 p-3">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt
-                                        class="rounded-circle" width="33" height="33">
-                                    <input type="text" class="form-control py-8" id="exampleInputtext"
-                                        aria-describedby="textHelp" placeholder="Comment">
-                                    <button class="btn btn-primary">Comment</button>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-body border-bottom">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar5.png" alt
-                                            class="rounded-circle" width="40" height="40">
-                                        <h6 class="fw-semibold mb-0 fs-4">Carry Minati</h6>
-                                        <span class="fs-2"><span
-                                                class="p-1 bg-light rounded-circle d-inline-block"></span>
-                                            now</span>
-                                    </div>
-                                    <p class="text-dark my-3">
-                                        Pucnus taw set babu lasufot lawdebuw nem ig bopnub notavfe pe ranlu dijsan
-                                        liwfekaj
-                                        lo az. Dom giat gu
-                                        sehiosi bikelu lo eb uwrerej bih woppoawi wijdiola iknem hih suzega gojmev kir
-                                        rigoj.
-                                    </p>
-                                    <div class="d-flex align-items-center">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <a class="text-white d-flex align-items-center justify-content-center bg-primary p-2 fs-4 rounded-circle"
-                                                href="javascript:void(0)" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" data-bs-title="Like">
-                                                <i class="fa fa-thumbs-up"></i>
-                                            </a>
-                                            <span class="text-dark fw-semibold">1</span>
-                                        </div>
-                                        <div class="d-flex align-items-center gap-2 ms-4">
-                                            <a class="text-white d-flex align-items-center justify-content-center bg-secondary p-2 fs-4 rounded-circle"
-                                                href="javascript:void(0)" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" data-bs-title="Comment">
-                                                <i class="fa fa-comments"></i>
-                                            </a>
-                                            <span class="text-dark fw-semibold">0</span>
-                                        </div>
-                                        <a class="text-dark ms-auto d-flex align-items-center justify-content-center bg-transparent p-2 fs-4 rounded-circle"
-                                            href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top"
-                                            data-bs-title="Share">
-                                            <i class="fa fa-share"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center gap-3 p-3">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar5.png" alt
-                                        class="rounded-circle" width="33" height="33">
-                                    <input type="text" class="form-control py-8" id="exampleInputtext"
-                                        aria-describedby="textHelp" placeholder="Comment">
-                                    <button class="btn btn-primary">Comment</button>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-body border-bottom">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt
-                                            class="rounded-circle" width="40" height="40">
-                                        <h6 class="fw-semibold mb-0 fs-4">Genelia Desouza</h6>
-                                        <span class="fs-2"><span
-                                                class="p-1 bg-light rounded-circle d-inline-block"></span>
-                                            15 min ago</span>
-                                    </div>
-                                    <p class="text-dark my-3">
-                                        Faco kiswuoti mucurvi juokomo fobgi aze huweik zazjofefa kuujer talmoc li niczot
-                                        lohejbo vozev zi huto. Ju
-                                        tupma uwujate bevolkoh hob munuap lirec zak ja li hotlanu pigtunu.
-                                    </p>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt
-                                                class="img-fluid rounded-4 mb-3 mb-sm-0">
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <img src="https://bootdey.com/img/Content/avatar/avatar4.png" alt
-                                                class="img-fluid rounded-4">
-                                        </div>
-                                    </div>
-                                    <div class="d-flex align-items-center my-3">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <a class="text-dark d-flex align-items-center justify-content-center bg-light p-2 fs-4 rounded-circle"
-                                                href="javascript:void(0)" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" data-bs-title="Like">
-                                                <i class="fa fa-thumbs-up"></i>
-                                            </a>
-                                            <span class="text-dark fw-semibold">320</span>
-                                        </div>
-                                        <div class="d-flex align-items-center gap-2 ms-4">
-                                            <a class="text-white d-flex align-items-center justify-content-center bg-secondary p-2 fs-4 rounded-circle"
-                                                href="javascript:void(0)" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" data-bs-title="Comment">
-                                                <i class="fa fa-comments"></i>
-                                            </a>
-                                            <span class="text-dark fw-semibold">1</span>
-                                        </div>
-                                        <a class="text-dark ms-auto d-flex align-items-center justify-content-center bg-transparent p-2 fs-4 rounded-circle"
-                                            href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top"
-                                            data-bs-title="Share">
-                                            <i class="fa fa-share"></i>
-                                        </a>
-                                    </div>
-                                    <div class="p-4 rounded-2 bg-light">
-                                        <div class="d-flex align-items-center gap-3">
-                                            <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt
-                                                class="rounded-circle" width="33" height="33">
-                                            <h6 class="fw-semibold mb-0 fs-4">Ritesh Deshmukh</h6>
-                                            <span class="fs-2"><span
-                                                    class="p-1 bg-muted rounded-circle d-inline-block"></span> 15 min
-                                                ago</span>
-                                        </div>
-                                        <p class="my-3">
-                                            Hintib cojno riv ze heb cipcep fij wo tufinpu bephekdab infule pajnaji.
-                                            Jiran
-                                            goetimip muovo go en
-                                            gaga zeljomim hozlu lezuvi ehkapod dec bifoom hag dootasac odo luvgit ti
-                                            ella.
-                                        </p>
-                                        <div class="d-flex align-items-center">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <a class="text-white d-flex align-items-center justify-content-center bg-primary p-2 fs-4 rounded-circle"
+                                                <a class="text-dark ms-auto d-flex align-items-center justify-content-center bg-transparent p-2 fs-4 rounded-circle"
                                                     href="javascript:void(0)" data-bs-toggle="tooltip"
-                                                    data-bs-placement="top" data-bs-title="Like">
-                                                    <i class="fa fa-thumbs-up"></i>
+                                                    data-bs-placement="top" data-bs-title="Share">
+                                                    <i class="fa fa-share"></i>
                                                 </a>
-                                                <span class="text-dark fw-semibold">65</span>
                                             </div>
-                                            <div class="d-flex align-items-center gap-2 ms-4">
-                                                <a class="text-white d-flex align-items-center justify-content-center bg-secondary p-2 fs-4 rounded-circle"
-                                                    href="javascript:void(0)" data-bs-toggle="tooltip"
-                                                    data-bs-placement="top" data-bs-title="Reply">
-                                                    <i class="fa fa-arrow-up"></i>
-                                                </a>
-                                                <span class="text-dark fw-semibold">0</span>
+                                            <div class="d-flex align-items-center gap-3 p-3 w-100">
+                                                {{-- @dd($user_name->profile->avatar) --}}
+                                                @if ($user_name->profile->avatar == null)
+                                                    @if ($user_name->gender == 'male')
+                                                        <img src="{{ asset('images/avatar6.png') }}" alt
+                                                            class="rounded-circle" width="40" height="40">
+                                                    @else
+                                                        <img src="{{ asset('images/avatar3.png') }}" alt
+                                                            class="rounded-circle" width="40" height="40">
+                                                    @endif
+                                                @else
+                                                    @php
+                                                        $avatarData = json_decode($user_name->profile->avatar);
+                                                        $filename = $avatarData->filename ?? null;
+                                                    @endphp
+                                                    <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id . '/images/profile/' . $filename) }}"
+                                                        alt="Post Image" class="rounded-circle" width="40"
+                                                        height="40">
+                                                @endif
+                                                <h6 class="fw-semibold mb-0 fs-4">{{ $user_name->name }} :</h6>
+                                                <form action="{{ route('comments.store') }}" method="post">
+                                                    @csrf
+                                                    <input type="hidden" name="post_id" value="{{ $post->id }}">
+                                                    <div class="input-group w-100">
+                                                        <input type="text" class="form-control flex-grow-1"
+                                                            id="exampleInputtext" aria-describedby="textHelp"
+                                                            placeholder="Comment" name="comment" required>
+                                                        <div class="input-group-append ms-auto">
+                                                            <button class="btn btn-primary"
+                                                                type="submit">Comment</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
                                             </div>
+                                            @foreach ($posts as $post)
+                                                <div class="position-relative">
+                                                    <!-- عرض التعليق الأول فقط -->
+                                                    @if ($post->comments->isNotEmpty())
+                                                        @php
+                                                            $comment = $post->comments->first(); // الحصول على التعليق الأول فقط
+                                                        @endphp
+                                                        <div class="p-4 rounded-2 bg-light mb-3">
+                                                            <div class="d-flex align-items-center gap-3 p-3">
+                                                                @if ($comment->profile->avatar == null)
+                                                                    @if ($comment->profile->gender == 'male')
+                                                                        <img src="{{ asset('images/avatar6.png') }}" alt
+                                                                            class="rounded-circle" width="33"
+                                                                            height="33">
+                                                                    @else
+                                                                        <img src="{{ asset('images/avatar3.png') }}" alt
+                                                                            class="rounded-circle" width="33"
+                                                                            height="33">
+                                                                    @endif
+                                                                @else
+                                                                    @php
+                                                                        $avatarData = json_decode(
+                                                                            $comment->profile->avatar,
+                                                                        );
+                                                                        $filename = $avatarData->filename ?? null;
+                                                                    @endphp
+                                                                    <img src="{{ url('/storage/media/users/User_ID_' . $comment->profile->user_id . '/images/profile/' . $filename) }}"
+                                                                        alt class="rounded-circle" width="33"
+                                                                        height="33">
+                                                                @endif
+                                                                <h6 class="fw-semibold mb-0 fs-4">
+                                                                    {{ $comment->profile->name }}</h6>
+                                                                <span class="fs-2"><span
+                                                                        class="p-1 bg-muted rounded-circle d-inline-block"></span>
+                                                                    {{ $comment->profile->created_at->setTimezone('Asia/Damascus')->diffForHumans() }}
+                                                                </span>
+                                                            </div>
+
+                                                            {{-- هنا تم تعديل لعرض تعليق واحد فقط --}}
+                                                            <p class="my-3">{{ $comment->comment }}</p>
+                                                            {{-- ---- --}}
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="d-flex align-items-center gap-2">
+                                                                    <a class="text-white d-flex align-items-center justify-content-center bg-primary p-2 fs-4 rounded-circle"
+                                                                        href="javascript:void(0)" data-bs-toggle="tooltip"
+                                                                        data-bs-placement="top" data-bs-title="Like">
+                                                                        <i class="fa fa-thumbs-up"></i>
+                                                                    </a>
+                                                                    <span class="text-dark fw-semibold">55</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @endif
+
+                                                    
+                                                    <div>
+                                                        <a href="javascript:void(0)" class="text-primary"
+                                                            onclick="toggleComments('{{ $post->id }}')">اقرأ المزيد من
+                                                            التعليقات</a>
+                                                    </div>
+
+                                                    <!-- التعليقات المخفية -->
+                                                    <div id="comments-{{ $post->id }}" class="d-none mt-3">
+                                                        @foreach ($post->comments as $comment)
+                                                            <div class="p-4 rounded-2 bg-light mb-3">
+                                                                <div class="d-flex align-items-center gap-3 p-3">
+                                                                    @if ($comment->profile->avatar == null)
+                                                                        @if ($comment->profile->gender == 'male')
+                                                                            <img src="{{ asset('images/avatar6.png') }}"
+                                                                                alt class="rounded-circle" width="33"
+                                                                                height="33">
+                                                                        @else
+                                                                            <img src="{{ asset('images/avatar3.png') }}"
+                                                                                alt class="rounded-circle" width="33"
+                                                                                height="33">
+                                                                        @endif
+                                                                    @else
+                                                                        @php
+                                                                            $avatarData = json_decode(
+                                                                                $comment->profile->avatar,
+                                                                            );
+                                                                            $filename = $avatarData->filename ?? null;
+                                                                        @endphp
+                                                                        <img src="{{ url('/storage/media/users/User_ID_' . $comment->profile->user_id . '/images/profile/' . $filename) }}"
+                                                                            alt class="rounded-circle" width="33"
+                                                                            height="33">
+                                                                    @endif
+                                                                    <h6 class="fw-semibold mb-0 fs-4">
+                                                                        {{ $comment->profile->name }}</h6>
+                                                                    <span class="fs-2"><span
+                                                                            class="p-1 bg-muted rounded-circle d-inline-block"></span>
+                                                                        {{ $comment->profile->created_at->setTimezone('Asia/Damascus')->diffForHumans() }}</span>
+                                                                </div>
+                                                                <p class="my-3">{{ $comment->comment }}</p>
+                                                                <div class="d-flex align-items-center">
+                                                                    <div class="d-flex align-items-center gap-2">
+                                                                        <a class="text-white d-flex align-items-center justify-content-center bg-primary p-2 fs-4 rounded-circle"
+                                                                            href="javascript:void(0)"
+                                                                            data-bs-toggle="tooltip"
+                                                                            data-bs-placement="top" data-bs-title="Like">
+                                                                            <i class="fa fa-thumbs-up"></i>
+                                                                        </a>
+                                                                        <span class="text-dark fw-semibold">55</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            @endforeach
                                         </div>
                                     </div>
-                                </div>
-                                <div class="d-flex align-items-center gap-3 p-3">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt
-                                        class="rounded-circle" width="33" height="33">
-                                    <input type="text" class="form-control py-8" id="exampleInputtext"
-                                        aria-describedby="textHelp" placeholder="Comment">
-                                    <button class="btn btn-primary">Comment</button>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-body border-bottom">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt
-                                            class="rounded-circle" width="40" height="40">
-                                        <h6 class="fw-semibold mb-0 fs-4">Mathew Anderson</h6>
-                                        <span class="fs-2"><span
-                                                class="p-1 bg-light rounded-circle d-inline-block"></span>
-                                            15 min ago</span>
-                                    </div>
-                                    <p class="text-dark my-3">
-                                        Faco kiswuoti mucurvi juokomo fobgi aze huweik zazjofefa kuujer talmoc li niczot
-                                        lohejbo vozev zi huto. Ju
-                                        tupma uwujate bevolkoh hob munuap lirec zak ja li hotlanu pigtunu.
-                                    </p>
-                                    <img src="https://www.bootdey.com/image/680x380/FF7F50/000000" alt
-                                        class="img-fluid rounded-4 w-100 object-fit-cover mb-4" style="height: 360px;">
-                                    <div class="d-flex align-items-center">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <a class="text-white d-flex align-items-center justify-content-center bg-primary p-2 fs-4 rounded-circle"
-                                                href="javascript:void(0)" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" data-bs-title="Like">
-                                                <i class="fa fa-thumbs-up"></i>
-                                            </a>
-                                            <span class="text-dark fw-semibold">129</span>
-                                        </div>
-                                        <div class="d-flex align-items-center gap-2 ms-4">
-                                            <a class="text-white d-flex align-items-center justify-content-center bg-secondary p-2 fs-4 rounded-circle"
-                                                href="javascript:void(0)" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" data-bs-title="Comment">
-                                                <i class="fa fa-comments"></i>
-                                            </a>
-                                            <span class="text-dark fw-semibold">0</span>
-                                        </div>
-                                        <a class="text-dark ms-auto d-flex align-items-center justify-content-center bg-transparent p-2 fs-4 rounded-circle"
-                                            href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top"
-                                            data-bs-title="Share">
-                                            <i class="fa fa-share"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center gap-3 p-3">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt
-                                        class="rounded-circle" width="33" height="33">
-                                    <input type="text" class="form-control py-8" id="exampleInputtext"
-                                        aria-describedby="textHelp" placeholder="Comment">
-                                    <button class="btn btn-primary">Comment</button>
-                                </div>
-                            </div>
+                                @endforeach
+                            @else
+                                <p>No posts found.</p>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -817,6 +685,16 @@
         <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
         <script type="text/javascript"></script>
+        <script>
+            function toggleComments(postId) {
+                var commentsDiv = document.getElementById('comments-' + postId);
+                if (commentsDiv.classList.contains('d-none')) {
+                    commentsDiv.classList.remove('d-none');
+                } else {
+                    commentsDiv.classList.add('d-none');
+                }
+            }
+        </script>
     </body>
 
     </html>

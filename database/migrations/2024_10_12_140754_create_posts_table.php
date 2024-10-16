@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->longText('content');
             $table->string('image')->nullable();
+            $table->string('video')->nullable();
             $table->integer('profile_id')->nullable();
             $table->timestamps();
         });

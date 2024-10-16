@@ -21,10 +21,7 @@ class ProfileController extends Controller
     public function profile($id)
     {
         $user_name = User::where('id', $id)->with('profile')->first();
-        // استرجاع المنشورات الخاصة بالمستخدم  
-        $posts = Post::with('comments.profile')->where('profile_id', $id)->get(); // تأكد من أنك تستخدم profile_id بدلاً من id  
-
-        // إضافة بقية المتغيرات التي ترغب في تمريرها إلى العرض  
+        $posts = Post::with('comments.profile')->where('profile_id', $id)->get(); 
         $activeTab = 'Profile';
         return view('site.profile.index', compact('user_name', 'activeTab', 'posts'));
     }
@@ -57,8 +54,9 @@ class ProfileController extends Controller
             ]);
 
             // إعداد مسار التخزين  
-            // $user_name = $user->name;
-            $userDirectory = "public/media/users/User_ID_$user->user_id/images/profile";
+            $user_name = $user->name;
+            // $userDirectory = "public/media/users/User_ID_$user->user_id/images/profile";
+            $userDirectory = "public/media/users/$user_name/images/profile";
 
             // تحقق مما إذا كان هناك صورة جديدة للملف الشخصي  
             if ($request->hasFile('image')) {
@@ -158,7 +156,7 @@ class ProfileController extends Controller
     {
         $other_profile = Profile::where('id', $id)->where('name', $name)->first();
         // استرجاع المستخدم الحالي
-        $currentProfile = auth()->user()->profile; // تأكد من أن لديك علاقة صحيحة للحصول على الملف الشخصي للمستخدم الحالي
+        $currentProfile = auth()->user()->profile;
         // return $currentProfile;
         // تحقق مما إذا كانت الصداقة موجودة
         $isFriend = DB::table('friends')
@@ -166,7 +164,10 @@ class ProfileController extends Controller
             ->where('friend_profile_id', $other_profile->id)
             ->exists();
         $activeTab = 'Profile';
-        return view('site.profile.other_profile', compact('other_profile', 'currentProfile', 'isFriend', 'activeTab'));
+        $posts = Post::with('comments.profile')->where('profile_id', $id)->get();
+        // return $posts;
+        // return $posts->comments;
+        return view('site.profile.other_profile', compact('other_profile', 'currentProfile', 'isFriend', 'activeTab', 'posts'));
     }
 
     public function friends_of_other($name, $id)
