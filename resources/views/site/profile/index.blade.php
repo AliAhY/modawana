@@ -532,7 +532,7 @@
                                                     </div>
                                                 </form>
                                             </div>
-                                            @foreach ($posts as $post)
+                                            {{-- @foreach ($posts as $post) --}}
                                                 <div class="position-relative">
                                                     <!-- عرض التعليق الأول فقط -->
                                                     @if ($post->comments->isNotEmpty())
@@ -640,7 +640,7 @@
                                                         @endforeach
                                                     </div>
                                                 </div>
-                                            @endforeach
+                                            {{-- @endforeach --}}
                                         </div>
                                     </div>
                                 @endforeach

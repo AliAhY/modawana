@@ -22,6 +22,7 @@ class ProfileController extends Controller
     {
         $user_name = User::where('id', $id)->with('profile')->first();
         $posts = Post::with('comments.profile')->where('profile_id', $id)->get(); 
+        // return $posts;
         $activeTab = 'Profile';
         return view('site.profile.index', compact('user_name', 'activeTab', 'posts'));
     }

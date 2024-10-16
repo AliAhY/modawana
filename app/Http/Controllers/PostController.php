@@ -48,13 +48,13 @@ class PostController extends Controller
 
         return back()->with('success', 'Post created successfully!');
     }
-    public function show($id)
-    {
-        // $user_name = User::findOrFail($id);
-        $posts = Post::with('comments.profile')->where('user_id', $id)->get() ?? collect();
-        return $posts;
-        // $posts = Profile::where('user_id', $id)->with('post')->first();
+    // public function show($id)
+    // {
+    //     // $user_name = User::findOrFail($id);
+    //     $posts = Post::with('comments.profile')->where('user_id', $id)->get() ?? collect();
+    //     return $posts;
+    //     // $posts = Profile::where('user_id', $id)->with('post')->first();
 
-        return view('site.profile.index', compact('posts'));
-    }
+    //     return view('site.profile.index', compact('posts'));
+    // }
 }

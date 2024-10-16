@@ -501,7 +501,7 @@
                                                     Your browser does not support the video tag.
                                                 </video>
                                             @endif
-                                            
+
                                             <div class="d-flex align-items-center my-3">
                                                 <div class="d-flex align-items-center gap-2">
                                                     <a class="text-white d-flex align-items-center justify-content-center bg-primary p-2 fs-4 rounded-circle"
@@ -560,116 +560,86 @@
                                                     </div>
                                                 </form>
                                             </div>
-                                            @foreach ($posts as $post)
-                                                <div class="position-relative">
-                                                    <!-- عرض التعليق الأول فقط -->
-                                                    @if ($post->comments->isNotEmpty())
-                                                        @php
-                                                            $comment = $post->comments->first(); // الحصول على التعليق الأول فقط
-                                                        @endphp
-                                                        <div class="p-4 rounded-2 bg-light mb-3">
-                                                            <div class="d-flex align-items-center gap-3 p-3">
-                                                                @if ($comment->profile->avatar == null)
-                                                                    @if ($comment->profile->gender == 'male')
-                                                                        <img src="{{ asset('images/avatar6.png') }}" alt
-                                                                            class="rounded-circle" width="33"
-                                                                            height="33">
-                                                                    @else
-                                                                        <img src="{{ asset('images/avatar3.png') }}" alt
-                                                                            class="rounded-circle" width="33"
-                                                                            height="33">
-                                                                    @endif
-                                                                @else
-                                                                    @php
-                                                                        $avatarData = json_decode(
-                                                                            $comment->profile->avatar,
-                                                                        );
-                                                                        $filename = $avatarData->filename ?? null;
-                                                                    @endphp
-                                                                    <img src="{{ url('/storage/media/users/User_ID_' . $comment->profile->user_id . '/images/profile/' . $filename) }}"
-                                                                        alt class="rounded-circle" width="33"
-                                                                        height="33">
-                                                                @endif
-                                                                <h6 class="fw-semibold mb-0 fs-4">
-                                                                    {{ $comment->profile->name }}</h6>
-                                                                <span class="fs-2"><span
-                                                                        class="p-1 bg-muted rounded-circle d-inline-block"></span>
-                                                                    {{ $comment->profile->created_at->setTimezone('Asia/Damascus')->diffForHumans() }}
-                                                                </span>
-                                                            </div>
-
-                                                            {{-- هنا تم تعديل لعرض تعليق واحد فقط --}}
-                                                            <p class="my-3">{{ $comment->comment }}</p>
-                                                            {{-- ---- --}}
-                                                            <div class="d-flex align-items-center">
-                                                                <div class="d-flex align-items-center gap-2">
-                                                                    <a class="text-white d-flex align-items-center justify-content-center bg-primary p-2 fs-4 rounded-circle"
-                                                                        href="javascript:void(0)" data-bs-toggle="tooltip"
-                                                                        data-bs-placement="top" data-bs-title="Like">
-                                                                        <i class="fa fa-thumbs-up"></i>
-                                                                    </a>
-                                                                    <span class="text-dark fw-semibold">55</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    @endif
-
-                                                    
-                                                    <div>
-                                                        <a href="javascript:void(0)" class="text-primary"
-                                                            onclick="toggleComments('{{ $post->id }}')">اقرأ المزيد من
-                                                            التعليقات</a>
-                                                    </div>
-
-                                                    <!-- التعليقات المخفية -->
-                                                    <div id="comments-{{ $post->id }}" class="d-none mt-3">
-                                                        @foreach ($post->comments as $comment)
-                                                            <div class="p-4 rounded-2 bg-light mb-3">
-                                                                <div class="d-flex align-items-center gap-3 p-3">
-                                                                    @if ($comment->profile->avatar == null)
-                                                                        @if ($comment->profile->gender == 'male')
-                                                                            <img src="{{ asset('images/avatar6.png') }}"
-                                                                                alt class="rounded-circle" width="33"
-                                                                                height="33">
-                                                                        @else
-                                                                            <img src="{{ asset('images/avatar3.png') }}"
-                                                                                alt class="rounded-circle" width="33"
-                                                                                height="33">
-                                                                        @endif
-                                                                    @else
-                                                                        @php
-                                                                            $avatarData = json_decode(
-                                                                                $comment->profile->avatar,
-                                                                            );
-                                                                            $filename = $avatarData->filename ?? null;
-                                                                        @endphp
-                                                                        <img src="{{ url('/storage/media/users/User_ID_' . $comment->profile->user_id . '/images/profile/' . $filename) }}"
-                                                                            alt class="rounded-circle" width="33"
-                                                                            height="33">
-                                                                    @endif
-                                                                    <h6 class="fw-semibold mb-0 fs-4">
-                                                                        {{ $comment->profile->name }}</h6>
-                                                                    <span class="fs-2"><span
-                                                                            class="p-1 bg-muted rounded-circle d-inline-block"></span>
-                                                                        {{ $comment->profile->created_at->setTimezone('Asia/Damascus')->diffForHumans() }}</span>
-                                                                </div>
-                                                                <p class="my-3">{{ $comment->comment }}</p>
-                                                                <div class="d-flex align-items-center">
-                                                                    <div class="d-flex align-items-center gap-2">
-                                                                        <a class="text-white d-flex align-items-center justify-content-center bg-primary p-2 fs-4 rounded-circle"
-                                                                            href="javascript:void(0)"
-                                                                            data-bs-toggle="tooltip"
-                                                                            data-bs-placement="top" data-bs-title="Like">
-                                                                            <i class="fa fa-thumbs-up"></i>
-                                                                        </a>
-                                                                        <span class="text-dark fw-semibold">55</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-                                                </div>
-                                            @endforeach
+                                            
+                                            <div class="container my-5">  
+                                                <h2 class="text-center mb-4">التعليقات</h2>  
+                                            
+                                                <!-- التعليق الأول -->  
+                                                @if ($post->comments->isNotEmpty())  
+                                                    @php  
+                                                        $comment = $post->comments->first(); // الحصول على التعليق الأول فقط  
+                                                    @endphp  
+                                                    <div class="card mb-4">  
+                                                        <div class="card-body">  
+                                                            <div class="d-flex align-items-center mb-3">  
+                                                                @if ($comment->profile->avatar == null)  
+                                                                    <img src="{{ asset($comment->profile->gender == 'male' ? 'images/avatar6.png' : 'images/avatar3.png') }}"  
+                                                                         alt="avatar" class="rounded-circle" width="50" height="50">  
+                                                                @else  
+                                                                    @php  
+                                                                        $avatarData = json_decode($comment->profile->avatar);  
+                                                                        $filename = $avatarData->filename ?? null;  
+                                                                    @endphp  
+                                                                    <img src="{{ url('/storage/media/users/User_ID_' . $comment->profile->user_id . '/images/profile/' . $filename) }}"  
+                                                                         alt="avatar" class="rounded-circle" width="50" height="50">  
+                                                                @endif  
+                                                                <div class="ms-3">  
+                                                                    <h6 class="fw-bold">{{ $comment->profile->name }}</h6>  
+                                                                    <small class="text-muted">{{ $comment->profile->created_at->format('M d, Y \| h:i A') }}</small>  
+                                                                </div>  
+                                                            </div>  
+                                                            <p class="card-text">{{ $comment->comment }}</p>  
+                                                            <div class="d-flex align-items-center">  
+                                                                <a href="javascript:void(0)" class="btn btn-outline-primary me-2">  
+                                                                    <i class="fa fa-thumbs-up"></i> Like  
+                                                                </a>  
+                                                                <span class="text-dark fw-semibold">55 Likes</span>  
+                                                            </div>  
+                                                        </div>  
+                                                    </div>  
+                                                @endif  
+                                            
+                                                <div class="text-center mb-3">  
+                                                    <a href="javascript:void(0)" class="text-primary fw-semibold" onclick="toggleComments('{{ $post->id }}')">  
+                                                        اقرأ المزيد من التعليقات  
+                                                    </a>  
+                                                </div>  
+                                            
+                                                <!-- التعليقات المخفية -->  
+                                                <div id="comments-{{ $post->id }}" class="d-none mt-3">  
+                                                    @foreach ($post->comments as $comment)  
+                                                        <div class="card mb-3">  
+                                                            <div class="card-body">  
+                                                                <div class="d-flex align-items-center mb-3">  
+                                                                    @if ($comment->profile->avatar == null)  
+                                                                        <img src="{{ asset($comment->profile->gender == 'male' ? 'images/avatar6.png' : 'images/avatar3.png') }}"   
+                                                                             alt="avatar" class="rounded-circle" width="50" height="50">  
+                                                                    @else  
+                                                                        @php  
+                                                                            $avatarData = json_decode($comment->profile->avatar);  
+                                                                            $filename = $avatarData->filename ?? null;  
+                                                                        @endphp  
+                                                                        <img src="{{ url('/storage/media/users/User_ID_' . $comment->profile->user_id . '/images/profile/' . $filename) }}"   
+                                                                             alt="avatar" class="rounded-circle" width="50" height="50">  
+                                                                    @endif  
+                                                                    <div class="ms-3">  
+                                                                        <h6 class="fw-bold">{{ $comment->profile->name }}</h6>  
+                                                                        <small class="text-muted">{{ $comment->profile->created_at->format('M d, Y \| h:i A') }}</small>  
+                                                                    </div>  
+                                                                </div>  
+                                                                <p class="card-text">{{ $comment->comment }}</p>  
+                                                                <div class="d-flex align-items-center">  
+                                                                    <a href="javascript:void(0)" class="btn btn-outline-primary me-2">  
+                                                                        <i class="fa fa-thumbs-up"></i> Like  
+                                                                    </a>  
+                                                                    <span class="text-dark fw-semibold">55 Likes</span>  
+                                                                </div>  
+                                                            </div>  
+                                                        </div>  
+                                                    @endforeach  
+                                                </div>  
+                                            </div>  
+                                            
                                         </div>
                                     </div>
                                 @endforeach
