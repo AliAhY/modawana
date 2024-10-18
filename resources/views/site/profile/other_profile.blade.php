@@ -504,13 +504,16 @@
 
                                             <div class="d-flex align-items-center my-3">
                                                 <div class="d-flex align-items-center gap-2">
-                                                    <a class="text-white d-flex align-items-center justify-content-center bg-primary p-2 fs-4 rounded-circle"
-                                                        href="javascript:void(0)" data-bs-toggle="tooltip"
-                                                        data-bs-placement="top" data-bs-title="Like">
-                                                        <i class="fa fa-thumbs-up"></i>
-                                                    </a>
-                                                    <span class="text-dark fw-semibold">67</span>
+                                                    <button type="button"
+                                                        class="btn like-btn {{ $post->likes()->where('profile_id', Auth::user()->profile->id)->exists()? 'btn-primary': 'btn-outline-primary' }}"
+                                                        onclick="toggleLike({{ $post->id }}, this)">
+                                                        <i class="fa fa-thumbs-up"
+                                                            style="font-size: 1.2em; color: {{ $post->likes()->where('profile_id', Auth::user()->profile->id)->exists()? 'white': 'blue' }};"></i>
+                                                    </button>
+                                                    <span class="text-dark fw-semibold">{{ $post->likes()->count() }}
+                                                        Likes</span>
                                                 </div>
+
                                                 <div class="d-flex align-items-center gap-2 ms-4">
                                                     <a class="text-white d-flex align-items-center justify-content-center bg-secondary p-2 fs-4 rounded-circle"
                                                         href="javascript:void(0)" data-bs-toggle="tooltip"
@@ -637,6 +640,43 @@
                 } else {
                     commentsDiv.classList.add('d-none');
                 }
+            }
+
+
+            // الاعدابات
+            function toggleLike(postId, button) {
+                // إرسال طلب AJAX إلى الخادم  
+                fetch(`/posts/${postId}/toggle-like`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}', // تأكد من إضافة CSRF Token  
+                        },
+                        
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // تحديث الواجهة بناءً على حالة الإعجاب  
+                            const currentLikes = parseInt(button.nextElementSibling.innerText); // عدد الإعجابات الحالي  
+                            button.classList.toggle('btn-primary');
+                            button.classList.toggle('btn-outline-primary');
+
+                            // تغيير لون الأيقونة  
+                            button.querySelector('i').style.color = button.classList.contains('btn-primary') ? 'white' :
+                                'blue';
+
+                            // تحديث العدد  
+                            if (button.classList.contains('btn-primary')) {
+                                button.nextElementSibling.innerText = currentLikes + 1; // إضافة إعجاب  
+                            } else {
+                                button.nextElementSibling.innerText = currentLikes - 1; // إزالة إعجاب  
+                            }
+                        } else {
+                            console.error('Failed to toggle like:', data.message);
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
             }
         </script>
     </body>

@@ -401,14 +401,10 @@
                                     <div class="card">
                                         <div class="card-body border-bottom">
                                             <div class="d-flex align-items-center gap-3">
+                                                <!-- صورة المستخدم -->
                                                 @if ($user_name->avatar == null)
-                                                    @if ($user_name->gender == 'male')
-                                                        <img src="{{ asset('images/avatar6.png') }}" alt
-                                                            class="rounded-circle" width="40" height="40">
-                                                    @else
-                                                        <img src="{{ asset('images/avatar3.png') }}" alt
-                                                            class="rounded-circle" width="40" height="40">
-                                                    @endif
+                                                    <img src="{{ asset($user_name->gender == 'male' ? 'images/avatar6.png' : 'images/avatar3.png') }}"
+                                                        alt class="rounded-circle" width="40" height="40">
                                                 @else
                                                     @php
                                                         $avatarData = json_decode($user_name->avatar);
@@ -419,15 +415,11 @@
                                                         height="40">
                                                 @endif
 
-                                                <h6 class="fw-semibold mb-0 fs-4"> {{ $user_name->name }}
-                                                </h6>
+                                                <h6 class="fw-semibold mb-0 fs-4">{{ $user_name->name }}</h6>
                                                 <span class="fs-2"><span
-                                                        class="p-1 bg-light rounded-circle d-inline-block"></span>
-                                                    {{ $post->created_at }}</span>
+                                                        class="p-1 bg-light rounded-circle d-inline-block"></span>{{ $post->created_at }}</span>
                                             </div>
-                                            <p class="text-dark my-3">
-                                                {{ $post->content }}
-                                            </p>
+                                            <p class="text-dark my-3">{{ $post->content }}</p>
                                             @if ($post->image)
                                                 <img src="{{ url('storage/media/users/User_ID_' . $post->profile_id . '/posts/Post_' . $post->id . '/images/' . basename($post->image)) }}"
                                                     alt="Post Picture" class="img-fluid rounded-4 w-100 object-fit-cover"
@@ -444,13 +436,16 @@
 
                                             <div class="d-flex align-items-center my-3">
                                                 <div class="d-flex align-items-center gap-2">
-                                                    <a class="text-white d-flex align-items-center justify-content-center bg-primary p-2 fs-4 rounded-circle"
-                                                        href="javascript:void(0)" data-bs-toggle="tooltip"
-                                                        data-bs-placement="top" data-bs-title="Like">
-                                                        <i class="fa fa-thumbs-up"></i>
-                                                    </a>
-                                                    <span class="text-dark fw-semibold">67</span>
+                                                    <button type="button"
+                                                        class="btn like-btn {{ $post->likes()->where('profile_id', Auth::user()->profile->id)->exists()? 'btn-primary': 'btn-outline-primary' }}"
+                                                        onclick="toggleLike({{ $post->id }}, this)">
+                                                        <i class="fa fa-thumbs-up"
+                                                            style="font-size: 1.2em; color: {{ $post->likes()->where('profile_id', Auth::user()->profile->id)->exists()? 'white': 'blue' }};"></i>
+                                                    </button>
+                                                    <span class="text-dark fw-semibold">{{ $post->likes()->count() }}
+                                                        Likes</span>
                                                 </div>
+
                                                 <div class="d-flex align-items-center gap-2 ms-4">
                                                     <a class="text-white d-flex align-items-center justify-content-center bg-secondary p-2 fs-4 rounded-circle"
                                                         href="javascript:void(0)" data-bs-toggle="tooltip"
@@ -466,6 +461,7 @@
                                                     <i class="fa fa-share"></i>
                                                 </a>
                                             </div>
+
                                             <div class="d-flex align-items-center gap-3 p-3 w-100">
                                                 {{-- @dd($user_name->profile->avatar) --}}
                                                 @if ($user_name->profile->avatar == null)
@@ -502,7 +498,7 @@
                                             </div>
 
                                             <div class="container my-5">
-                                                <h2 class="text-center mb-4">التعليقات</h2>                                               
+                                                <h2 class="text-center mb-4">التعليقات</h2>
 
                                                 <div class="text-center mb-3">
                                                     <a href="javascript:void(0)" class="text-primary fw-semibold"
@@ -576,6 +572,44 @@
                     } else {
                         commentsDiv.classList.add('d-none');
                     }
+                }
+
+
+                function toggleLike(postId, button) {
+                    // إرسال طلب AJAX إلى الخادم  
+                    fetch(`/posts/${postId}/toggle-like`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}', // تأكد من إضافة CSRF Token  
+                            },
+                            body: JSON.stringify({
+                                // يمكنك إضافة أي بيانات إضافية تحتاجها  
+                            }),
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // تحديث الواجهة بناءً على حالة الإعجاب  
+                                const currentLikes = parseInt(button.nextElementSibling.innerText); // عدد الإعجابات الحالي  
+                                button.classList.toggle('btn-primary');
+                                button.classList.toggle('btn-outline-primary');
+
+                                // تغيير لون الأيقونة  
+                                button.querySelector('i').style.color = button.classList.contains('btn-primary') ? 'white' :
+                                    'blue';
+
+                                // تحديث العدد  
+                                if (button.classList.contains('btn-primary')) {
+                                    button.nextElementSibling.innerText = currentLikes + 1; // إضافة إعجاب  
+                                } else {
+                                    button.nextElementSibling.innerText = currentLikes - 1; // إزالة إعجاب  
+                                }
+                            } else {
+                                console.error('Failed to toggle like:', data.message);
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
                 }
             </script>
     </body>

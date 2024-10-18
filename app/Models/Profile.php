@@ -40,11 +40,21 @@ class Profile extends Model
         return $this->belongsToMany(Profile::class, 'friends', 'profile_id', 'friend_profile_id');
     }
     //=====================
-    
-    // التعليقات
+
+    // البوستات
     public function post()
     {
         return $this->hasMany(Post::class);
     }
     //=====================
+
+
+    // العلاقة مع Likes  
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+    //=====================
+
+
 }

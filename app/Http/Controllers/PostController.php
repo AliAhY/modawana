@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Like;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
-   
+
     public function store(Request $request, string $id)
     {
         $request->validate([
@@ -48,13 +50,42 @@ class PostController extends Controller
 
         return back()->with('success', 'Post created successfully!');
     }
-    // public function show($id)
-    // {
-    //     // $user_name = User::findOrFail($id);
-    //     $posts = Post::with('comments.profile')->where('user_id', $id)->get() ?? collect();
-    //     return $posts;
-    //     // $posts = Profile::where('user_id', $id)->with('post')->first();
 
-    //     return view('site.profile.index', compact('posts'));
+
+    // للقيام بإعجاب على المنشور  
+    // public function like(Post $post)
+    // {
+    //     $profileId = Auth::user()->profile->id;
+
+    //     // تحقق مما إذا كان المستخدم قد أعجب بالمنشور بالفعل  
+    //     $like = Like::where('profile_id', $profileId)->where('post_id', $post->id)->first();
+
+    //     if ($like) {
+    //         // إذا كان قد أعجب به، نلغي الإعجاب  
+    //         $like->delete();
+    //         return back()->with('message', 'تم إلغاء الإعجاب!');
+    //     } else {
+    //         // إذا لم يكن قد أعجب به، نقوم بإعجابه  
+    //         Like::create([
+    //             'profile_id' => $profileId,
+    //             'post_id' => $post->id,
+    //         ]);
+    //         return back()->with('message', 'تم الإعجاب!');
+    //     }
     // }
+
+
+    public function toggleLike($postId)
+    {
+        $post = Post::findOrFail($postId);
+        $like = $post->likes()->where('profile_id', Auth::user()->profile->id)->first();
+
+        if ($like) {
+            $like->delete(); // إذا كان المستخدم يحب المنشور، قم بإلغاء الإعجاب  
+            return response()->json(['success' => true]);
+        } else {
+            $post->likes()->create(['profile_id' => Auth::user()->profile->id]); // إذا لم يكن لديه إعجاب، قم بإعجابه  
+            return response()->json(['success' => true]);
+        }
+    }
 }

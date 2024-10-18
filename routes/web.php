@@ -53,4 +53,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/posts/{id}', [PostController::class, 'store'])->name('posts.store');
     Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+
+
+    // Route::post('/posts/{post}/like', [PostController::class, 'like'])->name('posts.like');  
+    Route::post('/posts/{post}/toggle-like', [PostController::class, 'toggleLike'])->name('posts.toggleLike');  
+
+
 });
