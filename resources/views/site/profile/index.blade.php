@@ -136,7 +136,7 @@
 
     <body>
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-        <div class="container">
+        {{-- <div class="container"> --}}
             <div class="card overflow-hidden">
                 <div class="card-body p-0">
 
@@ -402,20 +402,20 @@
                                         <div class="card-body border-bottom">
                                             <div class="d-flex align-items-center gap-3">
                                                 <!-- صورة المستخدم -->
-                                                @if ($user_name->avatar == null)
+                                                @if ($user_name->profile->avatar == null)
                                                     <img src="{{ asset($user_name->gender == 'male' ? 'images/avatar6.png' : 'images/avatar3.png') }}"
                                                         alt class="rounded-circle" width="40" height="40">
                                                 @else
                                                     @php
-                                                        $avatarData = json_decode($user_name->avatar);
+                                                        $avatarData = json_decode($user_name->profile->avatar);
                                                         $filename = $avatarData->filename ?? null;
                                                     @endphp
-                                                    <img src="{{ url('/storage/media/users/User_ID_' . $user_name->user_id . '/images/profile/' . $filename) }}"
+                                                    <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id . '/images/profile/' . $filename) }}"
                                                         alt="Post Image" class="rounded-circle" width="40"
                                                         height="40">
                                                 @endif
 
-                                                <h6 class="fw-semibold mb-0 fs-4">{{ $user_name->name }}</h6>
+                                                <h6 class="fw-semibold mb-0 fs-4">{{ $user_name->profile->name }}</h6>
                                                 <span class="fs-2"><span
                                                         class="p-1 bg-light rounded-circle d-inline-block"></span>{{ $post->created_at }}</span>
                                             </div>
@@ -583,13 +583,14 @@
                                 'Content-Type': 'application/json',
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}', // تأكد من إضافة CSRF Token  
                             },
-                            body: JSON.stringify({
-                                // يمكنك إضافة أي بيانات إضافية تحتاجها  
-                            }),
                         })
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
+                                // تشغيل صوت الإشعار  
+                                const audio = new Audio('/sounds/like_effect.m4a'); // تأكد من وضع المسار الصحيح للملف الصوتي  
+                                audio.play();
+
                                 // تحديث الواجهة بناءً على حالة الإعجاب  
                                 const currentLikes = parseInt(button.nextElementSibling.innerText); // عدد الإعجابات الحالي  
                                 button.classList.toggle('btn-primary');
@@ -612,6 +613,8 @@
                         .catch(error => console.error('Error:', error));
                 }
             </script>
+
+        {{-- </div> --}}
     </body>
 
     </html>

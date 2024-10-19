@@ -146,7 +146,7 @@
 
 
 
-        <div class="container">
+        {{-- <div class="container"> --}}
             <div class="card overflow-hidden">
                 <div class="card-body p-0">
 
@@ -420,5 +420,5 @@
                 </div>
 
             </div>
-        </div>
+        {{-- </div> --}}
     @endsection

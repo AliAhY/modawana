@@ -135,7 +135,7 @@
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 
-    <div class="container">
+    {{-- <div class="container"> --}}
         <div class="card overflow-hidden">
             <div class="card-body p-0">
 
@@ -303,7 +303,7 @@
                 </ul>
             </div>
         </div>
-    </div>
+    {{-- </div> --}}
     <div class="tab-content" id="pills-tabContent">
         <div class="container mt-5">
             <div class="tab-content" id="pills-tabContent">
