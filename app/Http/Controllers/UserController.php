@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Admin\Books;
+use App\Models\Post;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -12,11 +12,29 @@ class UserController extends Controller
 {
     public function index()
     {
-        // الحصول على معرف المستخدم الحالي
-        $current_user_id = Auth::id();
-        // جلب جميع البروفايلات ماعدا بروفايل المستخدم الحالي
-        $profiles = Profile::where('user_id', '!=', $current_user_id)->get();
-        // return $profiles;
-        return view('site.layouts.index', compact('profiles'));
+        // الحصول على معرف المستخدم الحالي  
+        $currentProfile = auth()->user()->profile;
+
+        // الحصول على id الأصدقاء  
+        $friendIds = $currentProfile->friends()->pluck('friend_profile_id')->toArray();
+
+        // إضافة معرف المستخدم الحالي إلى القائمة  
+        $friendIds[] = $currentProfile->id;
+
+        // جلب البوستات الخاصة بي وبوستات الأصدقاء  
+        $posts = Post::with('comments.profile')
+            ->whereIn('profile_id', $friendIds)
+            ->latest() // ترتيب البوستات من الأحدث إلى الأقدم  
+            // ->take(3) // أخذ آخر 3 بوستات فقط  
+            ->get();
+        // return $posts;
+        //السبب في استخدام whereIn بدلاً من where هو أن whereIn يسمح بالتحقق من مجموعة من القيم، وليس قيمة واحدة فقط.
+        return view('site.layouts.index', compact('posts'));
+    }
+
+    public function allProfile(){
+        $profiles = Profile::all();
+        // return $all_profiles;
+        return view('site.profile.allprofile', compact('profiles'));
     }
 }

@@ -160,7 +160,7 @@
                         <div class="d-flex align-items-center justify-content-around m-4">
                             <div class="text-center">
                                 <i class="fa fa-file fs-6 d-block mb-2"></i>
-                                <h4 class="mb-0 fw-semibold lh-1">938</h4>
+                                <h4 class="mb-0 fw-semibold lh-1">{{$num_posts}}</h4>
                                 <p class="mb-0 fs-4">Posts</p>
                             </div>
                             <div class="text-center">

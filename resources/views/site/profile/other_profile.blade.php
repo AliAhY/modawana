@@ -2,6 +2,7 @@
 @section('main')
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style type="text/css">
         .img-fluid {
             max-width: 100%;
@@ -131,6 +132,25 @@
             object-fit: cover;
             /* الصورة ستغطي العنصر بالكامل */
         }
+
+        .liked {
+            color: blue;
+            /* اللون الأزرق عند الإعجاب */
+        }
+
+        .like-button {
+            cursor: pointer;
+            /* تغيير المؤشر عند تحريكه فوق الزر */
+        }
+
+        .fa-trash {
+            transition: color 0.3s;
+        }
+
+        .fa-trash:hover {
+            color: darkred;
+            /* لون الأيقونة عند التمرير */
+        }
     </style>
     </head>
 
@@ -144,7 +164,7 @@
 
 
 
-        {{-- <div class="container"> --}}
+
         <div class="card overflow-hidden">
             <div class="card-body p-0">
 
@@ -169,7 +189,7 @@
                         <div class="d-flex align-items-center justify-content-around m-4">
                             <div class="text-center">
                                 <i class="fa fa-file fs-6 d-block mb-2"></i>
-                                <h4 class="mb-0 fw-semibold lh-1">938</h4>
+                                <h4 class="mb-0 fw-semibold lh-1">{{ $num_posts }}</h4>
                                 <p class="mb-0 fs-4">Posts</p>
                             </div>
                             <div class="text-center">
@@ -412,42 +432,12 @@
                             <div class="card-body">
                                 <h4 class="fw-semibold mb-3">Photos</h4>
                                 <div class="row">
-                                    <div class="col-4">
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt
-                                            class="rounded-2 img-fluid mb-9">
-                                    </div>
-                                    <div class="col-4">
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt
-                                            class="rounded-2 img-fluid mb-9">
-                                    </div>
-                                    <div class="col-4">
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt
-                                            class="rounded-2 img-fluid mb-9">
-                                    </div>
-                                    <div class="col-4">
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar4.png" alt
-                                            class="rounded-2 img-fluid mb-9">
-                                    </div>
-                                    <div class="col-4">
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar4.png" alt
-                                            class="rounded-2 img-fluid mb-9">
-                                    </div>
-                                    <div class="col-4">
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt
-                                            class="rounded-2 img-fluid mb-9">
-                                    </div>
-                                    <div class="col-4">
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt
-                                            class="rounded-2 img-fluid mb-6">
-                                    </div>
-                                    <div class="col-4">
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt
-                                            class="rounded-2 img-fluid mb-6">
-                                    </div>
-                                    <div class="col-4">
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt
-                                            class="rounded-2 img-fluid mb-6">
-                                    </div>
+                                    @foreach ($img_posts as $img_post)
+                                        <div class="col-4">
+                                            <img src="{{ url('storage/media/users/User_ID_' . $img_post->profile_id . '/posts/Post_' . $img_post->id . '/images/' . basename($img_post->image)) }}"
+                                                alt class="rounded-2 img-fluid mb-9">
+                                        </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
@@ -519,7 +509,9 @@
                                                     data-bs-placement="top" data-bs-title="Comment">
                                                     <i class="fa fa-comments"></i>
                                                 </a>
-                                                <span class="text-dark fw-semibold">{{ $post->comments->count() }}</span>
+                                                <span
+                                                    id="comment-count-{{ $post->id }}">{{ $post->comments->count() }}</span>
+
                                             </div>
                                             <a class="text-dark ms-auto d-flex align-items-center justify-content-center bg-transparent p-2 fs-4 rounded-circle"
                                                 href="javascript:void(0)" data-bs-toggle="tooltip"
@@ -571,10 +563,10 @@
                                                 </a>
                                             </div>
 
-                                            <!-- التعليقات المخفية -->
                                             <div id="comments-{{ $post->id }}" class="d-none mt-3">
+
                                                 @foreach ($post->comments as $comment)
-                                                    <div class="card mb-3">
+                                                    <div class="card mb-3" id="comment-{{ $comment->id }}">
                                                         <div class="card-body">
                                                             <div class="d-flex align-items-center mb-3">
                                                                 @if ($comment->profile->avatar == null)
@@ -593,27 +585,99 @@
                                                                         width="50" height="50">
                                                                 @endif
                                                                 <div class="ms-3">
-                                                                    <h6 class="fw-bold">{{ $comment->profile->name }}
-                                                                    </h6>
+                                                                    <h6 class="fw-bold">{{ $comment->profile->name }}</h6>
                                                                     <small
-                                                                        class="text-muted">{{ $comment->profile->created_at->format('M d, Y \| h:i A') }}</small>
+                                                                        class="text-muted">{{ $comment->created_at->format('M d, Y \| h:i A') }}</small>
                                                                 </div>
                                                             </div>
-                                                            <p class="card-text">{{ $comment->comment }}</p>
-                                                            <div class="d-flex align-items-center">
-                                                                <a href="javascript:void(0)"
-                                                                    class="btn btn-outline-primary me-2">
-                                                                    <i class="fa fa-thumbs-up"
-                                                                        style="font-size: 0.8em;"></i> Like
-                                                                </a>
-                                                                <span class="text-dark fw-semibold">55 Likes</span>
-                                                            </div>
+                                                            {{-- <p class="card-text">{{ $comment->comment }}</p> --}}
+                                                            <span class="card-text"
+                                                                id="comment-text-{{ $comment->id }}">{{ $comment->comment }}</span>
+
+                                                            @if ($comment->profile->id === auth()->user()->id)
+                                                                <div class="d-flex align-items-center">
+                                                                    <i class="fa fa-trash"
+                                                                        onclick="confirmDelete('{{ $comment->id }}')"
+                                                                        style="cursor: pointer; font-size: 24px; color: red; margin-right: 10px;">
+                                                                    </i>
+                                                                    {{-- زر اللايك على التعليق --}}
+                                                                    @php
+                                                                        $userLiked = $comment
+                                                                            ->likes()
+                                                                            ->where(
+                                                                                'profile_id',
+                                                                                auth()->user()->profile->id,
+                                                                            )
+                                                                            ->exists();
+                                                                    @endphp
+                                                                    <i class="far fa-thumbs-up like-icon {{ $userLiked ? 'liked' : '' }}"
+                                                                        data-comment-id="{{ $comment->id }}"
+                                                                        data-profile-id="{{ auth()->user()->profile->id }}"
+                                                                        data-is-liked="{{ $userLiked }}"
+                                                                        onclick="toggleLikeComment(this)"
+                                                                        style="cursor: pointer; font-size: 24px; color: {{ $userLiked ? 'blue' : 'black' }};">
+                                                                    </i>
+                                                                    <span class="like-count"
+                                                                        id="like-count-{{ $comment->id }}">{{ $comment->likes()->count() }}</span>
+
+
+
+                                                                    <i class="fas fa-pen"
+                                                                        onclick="showEditForm({{ $comment->id }}, '{{ $comment->comment }}')"
+                                                                        style="cursor: pointer; font-size: 20px; margin-left: 10px; color: green;"
+                                                                        title="تعديل التعليق">
+                                                                    </i>
+                                                                    <!-- نموذج تعديل التعليق -->
+                                                                    <!-- نموذج تعديل التعليق -->
+                                                                    <div id="edit-form-{{ $comment->id }}"
+                                                                        style="display: none;">
+                                                                        <input type="text"
+                                                                            id="edit-input-{{ $comment->id }}"
+                                                                            value="{{ $comment->comment }}">
+
+                                                                        <!-- أيقونة الحفظ -->
+                                                                        <i class="fas fa-check"
+                                                                            onclick="updateComment({{ $comment->id }})"
+                                                                            style="cursor: pointer; font-size: 20px; color: green; margin-right: 10px;"
+                                                                            title="حفظ">
+                                                                        </i>
+
+                                                                        <!-- أيقونة الإلغاء -->
+                                                                        <i class="fas fa-times"
+                                                                            onclick="hideEditForm({{ $comment->id }})"
+                                                                            style="cursor: pointer; font-size: 20px; color: red;"
+                                                                            title="إلغاء">
+                                                                        </i>
+                                                                    </div>
+                                                                </div>
+                                                            @else
+                                                                <div class="d-flex align-items-center">
+                                                                    {{-- زر اللايك على التعليق --}}
+                                                                    @php
+                                                                        $userLiked = $comment
+                                                                            ->likes()
+                                                                            ->where(
+                                                                                'profile_id',
+                                                                                auth()->user()->profile->id,
+                                                                            )
+                                                                            ->exists();
+                                                                    @endphp
+                                                                    <i class="far fa-thumbs-up like-icon {{ $userLiked ? 'liked' : '' }}"
+                                                                        data-comment-id="{{ $comment->id }}"
+                                                                        data-profile-id="{{ auth()->user()->profile->id }}"
+                                                                        data-is-liked="{{ $userLiked }}"
+                                                                        onclick="toggleLikeComment(this)"
+                                                                        style="cursor: pointer; font-size: 24px; color: {{ $userLiked ? 'blue' : 'black' }}">
+                                                                    </i>
+                                                                    <span class="like-count"
+                                                                        id="like-count-{{ $comment->id }}">{{ $comment->likes()->count() }}</span>
+                                                                </div>
+                                                            @endif
                                                         </div>
                                                     </div>
                                                 @endforeach
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
                             @endforeach
@@ -624,7 +688,7 @@
                 </div>
             </div>
         </div>
-        {{-- </div> --}}
+
         <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
         <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -677,8 +741,147 @@
                     })
                     .catch(error => console.error('Error:', error));
             }
-        </script>
-    </body>
 
-    </html>
-@endsection
+
+            function confirmDelete(commentId, postId) {
+                // الكود لإجراء تأكيد الحذف  
+                fetch(`/comments/${commentId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error('فشل حذف التعليق.');
+                        return response.json();
+                    })
+                    .then(data => {
+                        document.getElementById('comment-' + commentId).remove(); // حذف تعليق من الصفحة  
+                        // تحديث العداد  
+                        const commentCountElement = document.getElementById('comment-count-' + postId);
+                        if (commentCountElement) {
+                            let currentCount = parseInt(commentCountElement.textContent) || 0;
+                            commentCountElement.textContent = Math.max(0, currentCount - 1);
+                        }
+                    })
+                    .catch(error => console.error('حدث خطأ:', error));
+            }
+        </script>
+
+        <script>
+            $(document).ready(function() {
+                $('.like-button').click(function() {
+                    const commentId = $(this).data('comment-id');
+                    const likeCountElement = $('#like-count-' + commentId);
+                    const currentCount = parseInt(likeCountElement.text(), 10);
+
+                    $.ajax({
+                        url: '/comments/' + commentId + '/like', // تحقق من إعداد المسار الصحيح  
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}' // تأكد من تضمين توكن CSRF  
+                        },
+                        success: function(response) {
+                            likeCountElement.text(response.new_like_count); // تحديث عدد اللايكات  
+                        },
+                        error: function(xhr) {
+                            if (xhr.status === 400) {
+                                alert(xhr.responseJSON.error); // إخطار المستخدم إذا كان هناك خطأ  
+                            } else {
+                                console.error(xhr); // طباعة الأخطاء في وحدة التحكم  
+                            }
+                        }
+                    });
+                });
+            });
+
+
+            // وضع لايك على التعليق
+            function toggleLikeComment(button) {
+                const commentId = button.getAttribute('data-comment-id');
+                const profileId = button.getAttribute('data-profile-id');
+                const likeCountSpan = document.getElementById(`like-count-${commentId}`);
+
+                const isLiked = button.classList.toggle('liked');
+                const method = isLiked ? 'POST' : 'DELETE';
+
+                fetch(`/comments/${commentId}/like`, {
+                        method: method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify({
+                            profile_id: profileId
+                        })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                        throw new Error('Something went wrong');
+                    })
+                    .then(data => {
+                        if (isLiked) {
+                            // زيادة عدد الإعجابات فقط إذا كان الإعجاب الجديد صحيحًا  
+                            if (data.success) {
+                                likeCountSpan.textContent = parseInt(likeCountSpan.textContent, 10) + 1;
+                            }
+                            button.style.color = 'blue'; // تغيير لون الأيقونة إلى الأزرق  
+                        } else {
+                            // تقليل عدد الإعجابات إذا كان الإعجاب تمت إزالته  
+                            if (data.success) {
+                                likeCountSpan.textContent = parseInt(likeCountSpan.textContent, 10) - 1;
+                            }
+                            button.style.color = ''; // إعادة لون الأيقونة إلى الافتراضي  
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        </script>
+
+        {{-- تعديل التعليق باستخدام js --}}
+        <script>
+            function showEditForm(commentId, commentText) {
+                document.getElementById('edit-form-' + commentId).style.display = 'block';
+                document.getElementById('edit-input-' + commentId).value =
+                    commentText; // وضع نص التعليق الأصلي في حقل الإدخال  
+            }
+
+            // اخفاء الفورم
+            function hideEditForm(commentId) {
+                document.getElementById('edit-form-' + commentId).style.display = 'none';
+            }
+
+            function updateComment(commentId) {
+                const newCommentText = document.getElementById('edit-input-' + commentId).value;
+
+                // تنفيذ طلب AJAX لتحديث التعليق  
+                fetch(`/comments/${commentId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}' // إذا كنت تستخدم Laravel  
+                        },
+                        body: JSON.stringify({
+                            comment: newCommentText
+                        })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                        throw new Error('Network response was not ok');
+                    })
+                    .then(data => {
+                        // تحديث التعليق في الصفحة  
+                        document.getElementById('comment-text-' + commentId).innerText = newCommentText;
+                        hideEditForm(commentId);
+                    })
+                    .catch(error => {
+                        console.error('There was a problem with the fetch operation:', error);
+                    });
+            }
+        </script>
+    @endsection

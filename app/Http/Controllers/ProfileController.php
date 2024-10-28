@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Comment;
 use App\Models\Profile;
 use App\Models\User;
 use Exception;
@@ -11,9 +10,7 @@ use App\Models\Friend;
 use App\Models\FriendRequest;
 use App\Models\Post;
 use App\Notifications\FriendRequestNotification;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller
@@ -21,10 +18,12 @@ class ProfileController extends Controller
     public function profile($id)
     {
         $user_name = User::where('id', $id)->with('profile')->first();
-        $posts = Post::with('comments.profile')->where('profile_id', $id)->get(); 
-        // return $posts;
+        $posts = Post::with('comments.profile')->where('profile_id', $id)->get();
+        $num_posts = Post::with('comments.profile')->where('profile_id', $id)->count();
+        $img_posts = Post::with('comments.profile')->where('profile_id', $id)->where('image','!=', null)->get();
+        // return $img_posts;
         $activeTab = 'Profile';
-        return view('site.profile.index', compact('user_name', 'activeTab', 'posts'));
+        return view('site.profile.index', compact('user_name', 'activeTab', 'posts', 'num_posts', 'img_posts'));
     }
 
     public function edit_profile_form($id)
@@ -166,9 +165,9 @@ class ProfileController extends Controller
             ->exists();
         $activeTab = 'Profile';
         $posts = Post::with('comments.profile')->where('profile_id', $id)->get();
-        // return $posts;
-        // return $posts->comments;
-        return view('site.profile.other_profile', compact('other_profile', 'currentProfile', 'isFriend', 'activeTab', 'posts'));
+        $num_posts = Post::with('comments.profile')->where('profile_id', $id)->count();
+        $img_posts = Post::with('comments.profile')->where('profile_id', $id)->where('image','!=', null)->get();
+        return view('site.profile.other_profile', compact('other_profile', 'currentProfile', 'isFriend', 'activeTab', 'posts', 'num_posts', 'img_posts'));
     }
 
     public function friends_of_other($name, $id)
@@ -178,8 +177,9 @@ class ProfileController extends Controller
         $currentProfile = auth()->user()->profile;
         $activeTab = 'Friends';
         $friend_of_other = Friend::where('profile_id', $id)->get();
+        $num_posts = Post::with('comments.profile')->where('profile_id', $id)->count();
         // return $friend_of_other;
-        return view('site.profile.frindes_of_other', compact('other_profile', 'currentProfile', 'activeTab', 'friend_of_other'));
+        return view('site.profile.frindes_of_other', compact('other_profile', 'currentProfile', 'activeTab', 'friend_of_other','num_posts'));
     }
 
 
@@ -226,14 +226,16 @@ class ProfileController extends Controller
         $friendRequests = FriendRequest::where('recipient_profile_id', $id)->get();
         $num_of_frind_req = FriendRequest::where('recipient_profile_id', $id)->count();
         $activeTab = 'Friends Request';
-        return view('site.profile.Friendes.addRequest', compact('friendRequests', 'num_of_frind_req', 'activeTab'));
+        $num_posts = Post::with('comments.profile')->where('profile_id', $id)->count();
+        return view('site.profile.Friendes.addRequest', compact('friendRequests', 'num_of_frind_req', 'activeTab','num_posts'));
     }
     public function showFriends($id)
     {
         $friendRequests = Friend::where('profile_id', $id)->get();
         $num_of_frind = Friend::where('profile_id', $id)->count();
         $activeTab = 'Friends';
-        return view('site.profile.Friendes.friendes', compact('friendRequests', 'num_of_frind', 'activeTab'));
+        $num_posts = Post::with('comments.profile')->where('profile_id', $id)->count();
+        return view('site.profile.Friendes.friendes', compact('friendRequests', 'num_of_frind', 'activeTab', 'num_posts'));
     }
 
     public function AllAddsFriends($id)
@@ -241,7 +243,8 @@ class ProfileController extends Controller
         $all_friends_adds = FriendRequest::where('sender_profile_id', $id)->get();
         $num_of_frinds_add = FriendRequest::where('sender_profile_id', $id)->count();
         $activeTab = 'Add Friends';
-        return view('site.profile.Friendes.addSend', compact('all_friends_adds', 'num_of_frinds_add', 'activeTab'));
+        $num_posts = Post::with('comments.profile')->where('profile_id', $id)->count();
+        return view('site.profile.Friendes.addSend', compact('all_friends_adds', 'num_of_frinds_add', 'activeTab','num_posts'));
     }
 
 

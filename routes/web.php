@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\CommentLikeController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,13 +27,13 @@ Route::group([
 
     Route::resource('/books', BooksController::class);
     Route::post('/upload/blogs', [UploadController::class, 'upload_image_book'])->name('upload.books');
-
-    // Route::resource(''Pr);
 });
 
-Route::get('/', [UserController::class, 'index'])->name('index.user');
 // مجموعة المسارات المحمية بـ 'auth'  
 Route::middleware(['auth'])->group(function () {
+    Route::get('/', [UserController::class, 'index'])->name('index.user');
+    Route::get('/all_profiles', [UserController::class, 'allProfile'])->name('index.profiles');
+
     Route::get('/profile/{id}', [ProfileController::class, 'profile'])->name('user.profile');
     Route::get('/edit_profile_form/{id}', [ProfileController::class, 'edit_profile_form'])->name('user.edit_profile_form');
     Route::post('/upload/profile/{id}', [ProfileController::class, 'upload_profile_photo'])->name('upload.profile');
@@ -52,11 +53,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile/all_friends_of/{name}/{id}', [ProfileController::class, 'friends_of_other'])->name('profile.other.friends');
 
     Route::post('/posts/{id}', [PostController::class, 'store'])->name('posts.store');
+    Route::delete('/posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
+    Route::get('/site/profile/edit_post/{id}', [PostController::class, 'edit'])->name('posts.edit');
+    Route::put('/profile/edit_posts/{id}', [PostController::class, 'update'])->name('posts.update');
+
+
     Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::put('/comments/{id}', [CommentController::class, 'update'])->name('comments.update');
 
+    Route::delete('comments/{id}', [PostController::class, 'destroyComment'])->name('comments.destroy');
+    Route::post('/comments/{comment}/like', [CommentLikeController::class, 'store']);
+    Route::delete('/comments/{comment}/like', [CommentLikeController::class, 'destroy']);
 
-    // Route::post('/posts/{post}/like', [PostController::class, 'like'])->name('posts.like');  
-    Route::post('/posts/{post}/toggle-like', [PostController::class, 'toggleLike'])->name('posts.toggleLike');  
-
-
+    Route::post('/posts/{post}/toggle-like', [PostController::class, 'toggleLike'])->name('posts.toggleLike');
 });

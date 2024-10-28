@@ -56,5 +56,9 @@ class Profile extends Model
     }
     //=====================
 
-
+    // اعجابات البروفايل بالعليقات
+    public function commentLikes()  
+    {  
+        return $this->hasMany(CommentLike::class);  
+    } 
 }

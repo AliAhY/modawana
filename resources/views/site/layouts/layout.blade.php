@@ -100,6 +100,11 @@
                     </a>
                 </li>
                 <li class="nav-item mx-3">
+                    <a href="{{ route('index.profiles') }}" class="nav-link">
+                        All Profils
+                    </a>
+                </li>
+                <li class="nav-item mx-3">
                     <a class="nav-link" href="{{ route('logout') }}">Logout</a>
                 </li>
             </ul>
