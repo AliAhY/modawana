@@ -174,8 +174,13 @@
                                         <img src="{{ url('/storage/media/users/User_ID_' . $post->profile->user_id . '/images/profile/' . $filename) }}"
                                             alt="Post Image" class="rounded-circle" width="40" height="40">
                                     @endif
-
-                                    <h6 class="fw-semibold mb-0 fs-4">{{ $post->profile->name }}</h6>
+                                    @if ($post->profile->id == auth()->user()->id)
+                                        <a href="{{ route('user.profile', $post->profile->id) }}">{{ $post->profile->name }}</a>
+                                    @else
+                                        <a
+                                            href="{{ route('profile.other', [$post->profile->name, $post->profile->id]) }}">{{ $post->profile->name }}</a>
+                                    @endif
+                                    {{-- <h6 class="fw-semibold mb-0 fs-4">{{ $post->profile->name }}</h6> --}}
                                     <span class="fs-2"><span
                                             class="p-1 bg-light rounded-circle d-inline-block"></span>{{ $post->created_at->diffForHumans() }}</span>
                                 </div>
@@ -228,8 +233,8 @@
                                         @csrf
                                         <input type="hidden" name="post_id" value="{{ $post->id }}">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Comment" name="comment"
-                                                required>
+                                            <input type="text" class="form-control" placeholder="Comment"
+                                                name="comment" required>
                                             <button class="btn btn-primary" type="submit">Comment</button>
                                         </div>
                                     </form>

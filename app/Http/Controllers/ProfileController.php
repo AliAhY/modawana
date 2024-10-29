@@ -21,9 +21,10 @@ class ProfileController extends Controller
         $posts = Post::with('comments.profile')->where('profile_id', $id)->get();
         $num_posts = Post::with('comments.profile')->where('profile_id', $id)->count();
         $img_posts = Post::with('comments.profile')->where('profile_id', $id)->where('image','!=', null)->get();
+        $num_of_frind = Friend::where('profile_id', $id)->count();
         // return $img_posts;
         $activeTab = 'Profile';
-        return view('site.profile.index', compact('user_name', 'activeTab', 'posts', 'num_posts', 'img_posts'));
+        return view('site.profile.index', compact('user_name', 'activeTab', 'posts', 'num_posts', 'img_posts','num_of_frind'));
     }
 
     public function edit_profile_form($id)

@@ -20,8 +20,6 @@
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="{{ asset('css/login/util.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/login/main.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMV33z5QjmF4gANsOmtqKdnmi8d1r3zR5Z6dP5" crossorigin="anonymous">  
-
     <!--===============================================================================================-->
 </head>
 
@@ -35,7 +33,7 @@
                     <img src="{{ asset('/images/img-01.png') }}" alt="IMG">
                 </div>
 
-                <form class="login100-form validate-form" method="post" action="{{ route('login') }}">
+                <form class="login100-form validate-form" method="post" action="{{ url('/register') }}">
                     @csrf
                     <span class="login100-form-title">
                         Member Login
@@ -48,9 +46,6 @@
                             <i class="fa fa-envelope" aria-hidden="true"></i>
                         </span>
                     </div>
-                    @error('email')
-                        <div class="error text-danger">{{ $errors->first('username') }}</div>
-                    @enderror
 
                     <div class="wrap-input100 validate-input" data-validate = "Password is required">
                         <input class="input100" type="password" name="password" placeholder="Password">
@@ -59,9 +54,6 @@
                             <i class="fa fa-lock" aria-hidden="true"></i>
                         </span>
                     </div>
-                    @error('password')
-                        <div class="error text-danger">{{ $errors->first('password') }}</div>
-                    @enderror
 
                     <div class="container-login100-form-btn">
                         <button class="login100-form-btn" type="submit">

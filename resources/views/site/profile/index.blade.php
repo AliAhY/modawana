@@ -292,7 +292,7 @@
                                 class="nav-link position-relative rounded-0 {{ $activeTab === 'Friends' ? 'active' : '' }} d-flex align-items-center justify-content-center bg-transparent fs-3 py-6"
                                 id="pills-friends-tab">
                                 <i class="fas fa-user-friends me-2 fs-6"></i>
-                                <span class="d-none d-md-block">Friends</span>
+                                <span class="d-none d-md-block">Friends<span style="color: green">{{ $num_of_frind }}</span></span>
                             </button>
 
                         </a>
