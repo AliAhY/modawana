@@ -156,4 +156,5 @@ class PostController extends Controller
         // إرجاع استجابة ناجحة  
         return response()->json(['success' => 'تم حذف التعليق بنجاح.']);
     }
+
 }

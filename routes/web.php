@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommentLikeController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -34,7 +35,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('index.user');
     Route::get('/all_profiles', [UserController::class, 'allProfile'])->name('index.profiles');
 
-    Route::get('/profile/{id}', [ProfileController::class, 'profile'])->name('user.profile');
+    // Route::get('/profile/{id}', [ProfileController::class, 'profile'])->name('user.profile');
+    Route::get('/profile/{id}/{post_id?}', [ProfileController::class, 'profile'])->name('user.profile');  
     Route::get('/edit_profile_form/{id}', [ProfileController::class, 'edit_profile_form'])->name('user.edit_profile_form');
     Route::post('/upload/profile/{id}', [ProfileController::class, 'upload_profile_photo'])->name('upload.profile');
     Route::post('/upload/profile_cover/{id}', [ProfileController::class, 'upload_profile_cover'])->name('upload.cover');
@@ -66,4 +68,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/comments/{comment}/like', [CommentLikeController::class, 'destroy']);
 
     Route::post('/posts/{post}/toggle-like', [PostController::class, 'toggleLike'])->name('posts.toggleLike');
+
+    Route::post('/posts/reports/{id}', [ReportController::class, 'store'])->name('reports.store');
+
 });

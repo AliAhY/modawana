@@ -3,6 +3,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>  
+
     <style type="text/css">
         .img-fluid {
             max-width: 100%;
@@ -56,6 +58,7 @@
 
         .card {
             margin-bottom: 30px;
+            margin-right: 0px;
         }
 
         .position-relative {
@@ -292,7 +295,8 @@
                                 class="nav-link position-relative rounded-0 {{ $activeTab === 'Friends' ? 'active' : '' }} d-flex align-items-center justify-content-center bg-transparent fs-3 py-6"
                                 id="pills-friends-tab">
                                 <i class="fas fa-user-friends me-2 fs-6"></i>
-                                <span class="d-none d-md-block">Friends<span style="color: green">{{ $num_of_frind }}</span></span>
+                                <span class="d-none d-md-block">Friends<span
+                                        style="color: green">{{ $num_of_frind }}</span></span>
                             </button>
 
                         </a>
@@ -471,7 +475,6 @@
                                                 Your browser does not support the video tag.
                                             </video>
                                         @endif
-
                                         <div class="d-flex align-items-center my-3">
                                             <div class="d-flex align-items-center gap-2">
                                                 <button type="button"
@@ -480,8 +483,22 @@
                                                     <i class="fa fa-thumbs-up"
                                                         style="font-size: 1.2em; color: {{ $post->likes()->where('profile_id', Auth::user()->profile->id)->exists()? 'white': 'blue' }};"></i>
                                                 </button>
-                                                <span class="text-dark fw-semibold">{{ $post->likes()->count() }}
-                                                    Likes</span>
+                                                {{-- <a href="{{ route('user.profile', $post->id) }}"> --}}
+                                                {{-- <a href="{{ route('user.profile', ['id' => $user_name->profile->id, 'post_id' => $post->id]) }}"> --}}
+                                                {{-- <a
+                                                    href="{{ route('user.profile', [
+                                                        'id' => $user_name->profile->id,
+                                                        'post_id' => isset($post->id) ? $post->id : null,
+                                                    ]) }}">
+
+                                                    <span class="text-dark fw-semibold">{{ $post->likes()->count() }}
+                                                        Likes</span></a> --}}
+
+                                                <a href="javascript:void(0);" class="like-link"
+                                                    data-id="{{ $post->id }}">
+                                                    <span class="text-dark fw-semibold">{{ $post->likes()->count() }}
+                                                        Likes</span>
+                                                </a>
                                             </div>
 
                                             <div class="d-flex align-items-center gap-2 ms-4">
@@ -507,7 +524,6 @@
                                                 <button class="btn btn-danger" type="submit">حذف</button>
                                             </form>
                                         </div>
-
                                         <div class="d-flex align-items-center gap-3 p-3 w-100">
                                             {{-- @dd($user_name->profile->avatar) --}}
                                             @if ($user_name->profile->avatar == null)
@@ -541,7 +557,6 @@
                                                 </div>
                                             </form>
                                         </div>
-
                                         <div class="container my-5">
                                             <h2 class="text-center mb-4">التعليقات</h2>
 
@@ -665,6 +680,8 @@
                                                 @endforeach
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
                             @endforeach
                         @else
                             <p>No posts found.</p>
@@ -773,8 +790,6 @@
             });
         </script>
 
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
         <script>
             $(document).ready(function() {
                 $('.like-button').click(function() {
@@ -783,10 +798,10 @@
                     const currentCount = parseInt(likeCountElement.text(), 10);
 
                     $.ajax({
-                        url: '/comments/' + commentId + '/like', // تحقق من إعداد المسار الصحيح  
+                        url: '/comments/' + commentId + '/like', //  إعداد المسار الصحيح  
                         type: 'POST',
                         data: {
-                            _token: '{{ csrf_token() }}' // تأكد من تضمين توكن CSRF  
+                            _token: '{{ csrf_token() }}' //   تضمين توكن CSRF  
                         },
                         success: function(response) {
                             likeCountElement.text(response.new_like_count); // تحديث عدد اللايكات  
@@ -868,7 +883,7 @@
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}' // إذا كنت تستخدم Laravel  
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         },
                         body: JSON.stringify({
                             comment: newCommentText
@@ -889,5 +904,27 @@
                         console.error('There was a problem with the fetch operation:', error);
                     });
             }
+        </script>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).on('click', '.like-link', function() {
+                var postId = $(this).data('id');
+                var userId = '{{ $user_name->profile->id }}';
+
+                $.ajax({
+                    url: '{{ url('/profile') }}/' + userId + '/' + postId,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        // هنا يمكنك عرض المعلومات كما تريد  
+                        console.log(data);
+                        alert(JSON.stringify(data)); // عرض البيانات كـ JSON  
+                    },
+                    error: function(xhr) {
+                        console.error('Error occurred:', xhr);
+                    }
+                });
+            });
         </script>
     @endsection

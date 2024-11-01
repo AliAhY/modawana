@@ -10,7 +10,7 @@
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="{{ asset('css/login/bootstrap/css/bootstrap.min.css') }}">
     <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="{{ asset('font/login/font-awesome.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('fontawesome/css/all.min.css') }}">
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="{{ asset('css/login_animate/animate.css') }}">
     <!--===============================================================================================-->
@@ -20,8 +20,6 @@
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="{{ asset('css/login/util.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/login/main.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMV33z5QjmF4gANsOmtqKdnmi8d1r3zR5Z6dP5" crossorigin="anonymous">  
-
     <!--===============================================================================================-->
 </head>
 
@@ -31,7 +29,6 @@
         <div class="container-login100">
             <div class="wrap-login100">
                 <div class="login100-pic js-tilt" data-tilt>
-                    {{-- <img src="images/img-01.png" alt="IMG"> --}}
                     <img src="{{ asset('/images/img-01.png') }}" alt="IMG">
                 </div>
 
@@ -42,27 +39,28 @@
                     </span>
 
                     <div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
-                        <input class="input100" type="text" name="email" placeholder="Email">
+                        <input class="input100" type="text" id="email" name="email" placeholder="Email">
                         <span class="focus-input100"></span>
                         <span class="symbol-input100">
                             <i class="fa fa-envelope" aria-hidden="true"></i>
                         </span>
                     </div>
-                    @error('email')
-                        <div class="error text-danger">{{ $errors->first('username') }}</div>
-                    @enderror
 
                     <div class="wrap-input100 validate-input" data-validate = "Password is required">
-                        <input class="input100" type="password" name="password" placeholder="Password">
+                        <input class="input100" id="password" type="password" name="password" placeholder="Password">
                         <span class="focus-input100"></span>
                         <span class="symbol-input100">
                             <i class="fa fa-lock" aria-hidden="true"></i>
                         </span>
+
                     </div>
+
+                    @error('email')
+                        <div class="error text-danger">{{ $errors->first('email') }}</div>
+                    @enderror
                     @error('password')
                         <div class="error text-danger">{{ $errors->first('password') }}</div>
                     @enderror
-
                     <div class="container-login100-form-btn">
                         <button class="login100-form-btn" type="submit">
                             Login
@@ -93,7 +91,7 @@
 
 
     <!--===============================================================================================-->
-    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
     <!--===============================================================================================-->
     <script src="{{ asset('js/login_js/popper.js') }}"></script>
     <script src="{{ asset('js/login_js/bootstrap.min.js') }}"></script>
@@ -108,7 +106,7 @@
         })
     </script>
     <!--===============================================================================================-->
-    <script src="js/login_js/main.js"></script>
+    <script src="{{ asset('js/login_js/main.js') }}"></script>
 
 </body>
 

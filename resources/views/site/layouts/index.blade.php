@@ -72,6 +72,7 @@
 
         .border {
             border: 1px solid #ebf1f6 !important;
+            margin-top: 1px;
         }
 
         .fs-6 {
@@ -121,11 +122,9 @@
             margin-left: 30px !important;
         }
     </style>
-    </head>
 
-    <body>
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-        {{-- <div class="tab-content" id="pills-tabContent"> --}}
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <div class="tab-content" id="pills-tabContent">
         <div class="row">
             <div class="col-lg-12">
                 <div class="card shadow-none border">
@@ -175,7 +174,8 @@
                                             alt="Post Image" class="rounded-circle" width="40" height="40">
                                     @endif
                                     @if ($post->profile->id == auth()->user()->id)
-                                        <a href="{{ route('user.profile', $post->profile->id) }}">{{ $post->profile->name }}</a>
+                                        <a
+                                            href="{{ route('user.profile', $post->profile->id) }}">{{ $post->profile->name }}</a>
                                     @else
                                         <a
                                             href="{{ route('profile.other', [$post->profile->name, $post->profile->id]) }}">{{ $post->profile->name }}</a>
@@ -370,200 +370,200 @@
 
             </div>
         </div>
-        {{-- </div> --}}
-        <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
-        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script type="text/javascript"></script>
-        <script>
-            function toggleComments(postId) {
-                var commentsDiv = document.getElementById('comments-' + postId);
-                if (commentsDiv.classList.contains('d-none')) {
-                    commentsDiv.classList.remove('d-none');
-                } else {
-                    commentsDiv.classList.add('d-none');
-                }
+    </div>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript"></script>
+    <script>
+        function toggleComments(postId) {
+            var commentsDiv = document.getElementById('comments-' + postId);
+            if (commentsDiv.classList.contains('d-none')) {
+                commentsDiv.classList.remove('d-none');
+            } else {
+                commentsDiv.classList.add('d-none');
             }
+        }
 
 
-            function toggleLike(postId, button) {
-                // إرسال طلب AJAX إلى الخادم  
-                fetch(`/posts/${postId}/toggle-like`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}', //  CSRF Token  
-                        },
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // تشغيل صوت الإشعار  
-                            const audio = new Audio('/sounds/like_effect.m4a');
-                            audio.play();
+        function toggleLike(postId, button) {
+            // إرسال طلب AJAX إلى الخادم  
+            fetch(`/posts/${postId}/toggle-like`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}', //  CSRF Token  
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // تشغيل صوت الإشعار  
+                        const audio = new Audio('/sounds/like_effect.m4a');
+                        audio.play();
 
-                            // تحديث الواجهة بناءً على حالة الإعجاب  
-                            const currentLikes = parseInt(button.nextElementSibling.innerText);
-                            button.classList.toggle('btn-primary');
-                            button.classList.toggle('btn-outline-primary');
+                        // تحديث الواجهة بناءً على حالة الإعجاب  
+                        const currentLikes = parseInt(button.nextElementSibling.innerText);
+                        button.classList.toggle('btn-primary');
+                        button.classList.toggle('btn-outline-primary');
 
-                            // تغيير لون الأيقونة  
-                            button.querySelector('i').style.color = button.classList.contains('btn-primary') ? 'white' :
-                                'blue';
+                        // تغيير لون الأيقونة  
+                        button.querySelector('i').style.color = button.classList.contains('btn-primary') ? 'white' :
+                            'blue';
 
-                            // تحديث العدد  
-                            if (button.classList.contains('btn-primary')) {
-                                button.nextElementSibling.innerText = currentLikes + 1; // إضافة إعجاب  
-                            } else {
-                                button.nextElementSibling.innerText = currentLikes - 1; // إزالة إعجاب  
-                            }
+                        // تحديث العدد  
+                        if (button.classList.contains('btn-primary')) {
+                            button.nextElementSibling.innerText = currentLikes + 1; // إضافة إعجاب  
                         } else {
-                            console.error('Failed to toggle like:', data.message);
+                            button.nextElementSibling.innerText = currentLikes - 1; // إزالة إعجاب  
                         }
-                    })
-                    .catch(error => console.error('Error:', error));
-            }
+                    } else {
+                        console.error('Failed to toggle like:', data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
 
 
-            function confirmDelete(commentId, postId) {
-                // الكود لإجراء تأكيد الحذف  
-                fetch(`/comments/${commentId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                    })
-                    .then(response => {
-                        if (!response.ok) throw new Error('فشل حذف التعليق.');
-                        return response.json();
-                    })
-                    .then(data => {
-                        document.getElementById('comment-' + commentId).remove(); // حذف تعليق من الصفحة  
-                        // تحديث العداد  
-                        const commentCountElement = document.getElementById('comment-count-' + postId);
-                        if (commentCountElement) {
-                            let currentCount = parseInt(commentCountElement.textContent) || 0;
-                            commentCountElement.textContent = Math.max(0, currentCount - 1);
-                        }
-                    })
-                    .catch(error => console.error('حدث خطأ:', error));
-            }
-        </script>
-        <script>
-            $(document).ready(function() {
-                $('.like-button').click(function() {
-                    const commentId = $(this).data('comment-id');
-                    const likeCountElement = $('#like-count-' + commentId);
-                    const currentCount = parseInt(likeCountElement.text(), 10);
+        function confirmDelete(commentId, postId) {
+            // الكود لإجراء تأكيد الحذف  
+            fetch(`/comments/${commentId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('فشل حذف التعليق.');
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('comment-' + commentId).remove(); // حذف تعليق من الصفحة  
+                    // تحديث العداد  
+                    const commentCountElement = document.getElementById('comment-count-' + postId);
+                    if (commentCountElement) {
+                        let currentCount = parseInt(commentCountElement.textContent) || 0;
+                        commentCountElement.textContent = Math.max(0, currentCount - 1);
+                    }
+                })
+                .catch(error => console.error('حدث خطأ:', error));
+        }
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('.like-button').click(function() {
+                const commentId = $(this).data('comment-id');
+                const likeCountElement = $('#like-count-' + commentId);
+                const currentCount = parseInt(likeCountElement.text(), 10);
 
-                    $.ajax({
-                        url: '/comments/' + commentId + '/like', //   إعداد المسار الصحيح  
-                        type: 'POST',
-                        data: {
-                            _token: '{{ csrf_token() }}' //   تضمين توكن CSRF  
-                        },
-                        success: function(response) {
-                            likeCountElement.text(response.new_like_count); // تحديث عدد اللايكات  
-                        },
-                        error: function(xhr) {
-                            if (xhr.status === 400) {
-                                alert(xhr.responseJSON.error); // إخطار المستخدم إذا كان هناك خطأ  
-                            } else {
-                                console.error(xhr); // طباعة الأخطاء في وحدة التحكم  
-                            }
+                $.ajax({
+                    url: '/comments/' + commentId + '/like', //   إعداد المسار الصحيح  
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}' //   تضمين توكن CSRF  
+                    },
+                    success: function(response) {
+                        likeCountElement.text(response.new_like_count); // تحديث عدد اللايكات  
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 400) {
+                            alert(xhr.responseJSON.error); // إخطار المستخدم إذا كان هناك خطأ  
+                        } else {
+                            console.error(xhr); // طباعة الأخطاء في وحدة التحكم  
                         }
-                    });
+                    }
                 });
             });
+        });
 
 
-            // وضع لايك على التعليق
-            function toggleLikeComment(button) {
-                const commentId = button.getAttribute('data-comment-id');
-                const profileId = button.getAttribute('data-profile-id');
-                const likeCountSpan = document.getElementById(`like-count-${commentId}`);
+        // وضع لايك على التعليق
+        function toggleLikeComment(button) {
+            const commentId = button.getAttribute('data-comment-id');
+            const profileId = button.getAttribute('data-profile-id');
+            const likeCountSpan = document.getElementById(`like-count-${commentId}`);
 
-                const isLiked = button.classList.toggle('liked');
-                const method = isLiked ? 'POST' : 'DELETE';
+            const isLiked = button.classList.toggle('liked');
+            const method = isLiked ? 'POST' : 'DELETE';
 
-                fetch(`/comments/${commentId}/like`, {
-                        method: method,
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        },
-                        body: JSON.stringify({
-                            profile_id: profileId
-                        })
+            fetch(`/comments/${commentId}/like`, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        profile_id: profileId
                     })
-                    .then(response => {
-                        if (response.ok) {
-                            return response.json();
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Something went wrong');
+                })
+                .then(data => {
+                    if (isLiked) {
+                        // زيادة عدد الإعجابات فقط إذا كان الإعجاب الجديد صحيحًا  
+                        if (data.success) {
+                            likeCountSpan.textContent = parseInt(likeCountSpan.textContent, 10) + 1;
                         }
-                        throw new Error('Something went wrong');
-                    })
-                    .then(data => {
-                        if (isLiked) {
-                            // زيادة عدد الإعجابات فقط إذا كان الإعجاب الجديد صحيحًا  
-                            if (data.success) {
-                                likeCountSpan.textContent = parseInt(likeCountSpan.textContent, 10) + 1;
-                            }
-                            button.style.color = 'blue'; // تغيير لون الأيقونة إلى الأزرق  
-                        } else {
-                            // تقليل عدد الإعجابات إذا كان الإعجاب تمت إزالته  
-                            if (data.success) {
-                                likeCountSpan.textContent = parseInt(likeCountSpan.textContent, 10) - 1;
-                            }
-                            button.style.color = ''; // إعادة لون الأيقونة إلى الافتراضي  
+                        button.style.color = 'blue'; // تغيير لون الأيقونة إلى الأزرق  
+                    } else {
+                        // تقليل عدد الإعجابات إذا كان الإعجاب تمت إزالته  
+                        if (data.success) {
+                            likeCountSpan.textContent = parseInt(likeCountSpan.textContent, 10) - 1;
                         }
+                        button.style.color = ''; // إعادة لون الأيقونة إلى الافتراضي  
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+
+
+    {{-- تعديل التعليق باستخدام js --}}
+    <script>
+        function showEditForm(commentId, commentText) {
+            document.getElementById('edit-form-' + commentId).style.display = 'block';
+            document.getElementById('edit-input-' + commentId).value =
+                commentText; // وضع نص التعليق الأصلي في حقل الإدخال  
+        }
+
+        // اخفاء الفورم
+        function hideEditForm(commentId) {
+            document.getElementById('edit-form-' + commentId).style.display = 'none';
+        }
+
+        function updateComment(commentId) {
+            const newCommentText = document.getElementById('edit-input-' + commentId).value;
+
+            // تنفيذ طلب AJAX لتحديث التعليق  
+            fetch(`/comments/${commentId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // إذا كنت تستخدم Laravel  
+                    },
+                    body: JSON.stringify({
+                        comment: newCommentText
                     })
-                    .catch(error => console.error('Error:', error));
-            }
-        </script>
-
-
-        {{-- تعديل التعليق باستخدام js --}}
-        <script>
-            function showEditForm(commentId, commentText) {
-                document.getElementById('edit-form-' + commentId).style.display = 'block';
-                document.getElementById('edit-input-' + commentId).value =
-                    commentText; // وضع نص التعليق الأصلي في حقل الإدخال  
-            }
-
-            // اخفاء الفورم
-            function hideEditForm(commentId) {
-                document.getElementById('edit-form-' + commentId).style.display = 'none';
-            }
-
-            function updateComment(commentId) {
-                const newCommentText = document.getElementById('edit-input-' + commentId).value;
-
-                // تنفيذ طلب AJAX لتحديث التعليق  
-                fetch(`/comments/${commentId}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}' // إذا كنت تستخدم Laravel  
-                        },
-                        body: JSON.stringify({
-                            comment: newCommentText
-                        })
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            return response.json();
-                        }
-                        throw new Error('Network response was not ok');
-                    })
-                    .then(data => {
-                        // تحديث التعليق في الصفحة  
-                        document.getElementById('comment-text-' + commentId).innerText = newCommentText;
-                        hideEditForm(commentId);
-                    })
-                    .catch(error => {
-                        console.error('There was a problem with the fetch operation:', error);
-                    });
-            }
-        </script>
-    @endsection
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Network response was not ok');
+                })
+                .then(data => {
+                    // تحديث التعليق في الصفحة  
+                    document.getElementById('comment-text-' + commentId).innerText = newCommentText;
+                    hideEditForm(commentId);
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
+    </script>
+@endsection

@@ -15,16 +15,49 @@ use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller
 {
-    public function profile($id)
+    // public function profile($id, $post_id = null)
+    // {
+    //     $user_name = User::where('id', $id)->with('profile')->first();
+    //     $posts = Post::with('comments.profile')->where('profile_id', $id)->get();
+    //     // return $posts;
+    //     $num_posts = Post::with('comments.profile')->where('profile_id', $id)->count();
+    //     $img_posts = Post::with('comments.profile')->where('profile_id', $id)->where('image', '!=', null)->get();
+    //     $num_of_frind = Friend::where('profile_id', $id)->count();
+    //     // return $img_posts;
+    //     $activeTab = 'Profile';
+    //     $post = Post::with('likes.profile')->where('id', $post_id)->first();
+    //     // return $post;
+    //     return view('site.profile.index', compact('user_name', 'activeTab', 'posts', 'num_posts', 'img_posts', 'num_of_frind', 'post'));
+    // }
+
+    public function profile($id, $post_id = null)
     {
         $user_name = User::where('id', $id)->with('profile')->first();
         $posts = Post::with('comments.profile')->where('profile_id', $id)->get();
         $num_posts = Post::with('comments.profile')->where('profile_id', $id)->count();
-        $img_posts = Post::with('comments.profile')->where('profile_id', $id)->where('image','!=', null)->get();
+        $img_posts = Post::with('comments.profile')->where('profile_id', $id)->where('image', '!=', null)->get();
         $num_of_frind = Friend::where('profile_id', $id)->count();
-        // return $img_posts;
         $activeTab = 'Profile';
-        return view('site.profile.index', compact('user_name', 'activeTab', 'posts', 'num_posts', 'img_posts','num_of_frind'));
+
+        $post = null;
+        $likes = [];
+
+        // التحقق مما إذا كان هناك post_id  
+        if ($post_id) {
+            $post = Post::with('likes.profile')->where('id', $post_id)->first();
+
+            // إذا كان المنشور موجودًا، احصل على الأشخاص الذين قاموا بعمل "لايك"  
+            if ($post) {
+                $likes = $post->likes()->with('profile')->get();
+            }
+        }
+
+        // التحقق مما إذا كان الطلب AJAX  
+        if (request()->wantsJson()) {
+            return response()->json($likes);
+        }
+
+        return view('site.profile.index', compact('user_name', 'activeTab', 'posts', 'num_posts', 'img_posts', 'num_of_frind', 'post', 'likes'));
     }
 
     public function edit_profile_form($id)
@@ -167,7 +200,7 @@ class ProfileController extends Controller
         $activeTab = 'Profile';
         $posts = Post::with('comments.profile')->where('profile_id', $id)->get();
         $num_posts = Post::with('comments.profile')->where('profile_id', $id)->count();
-        $img_posts = Post::with('comments.profile')->where('profile_id', $id)->where('image','!=', null)->get();
+        $img_posts = Post::with('comments.profile')->where('profile_id', $id)->where('image', '!=', null)->get();
         return view('site.profile.other_profile', compact('other_profile', 'currentProfile', 'isFriend', 'activeTab', 'posts', 'num_posts', 'img_posts'));
     }
 
@@ -180,7 +213,7 @@ class ProfileController extends Controller
         $friend_of_other = Friend::where('profile_id', $id)->get();
         $num_posts = Post::with('comments.profile')->where('profile_id', $id)->count();
         // return $friend_of_other;
-        return view('site.profile.frindes_of_other', compact('other_profile', 'currentProfile', 'activeTab', 'friend_of_other','num_posts'));
+        return view('site.profile.frindes_of_other', compact('other_profile', 'currentProfile', 'activeTab', 'friend_of_other', 'num_posts'));
     }
 
 
@@ -228,7 +261,7 @@ class ProfileController extends Controller
         $num_of_frind_req = FriendRequest::where('recipient_profile_id', $id)->count();
         $activeTab = 'Friends Request';
         $num_posts = Post::with('comments.profile')->where('profile_id', $id)->count();
-        return view('site.profile.Friendes.addRequest', compact('friendRequests', 'num_of_frind_req', 'activeTab','num_posts'));
+        return view('site.profile.Friendes.addRequest', compact('friendRequests', 'num_of_frind_req', 'activeTab', 'num_posts'));
     }
     public function showFriends($id)
     {
@@ -245,7 +278,7 @@ class ProfileController extends Controller
         $num_of_frinds_add = FriendRequest::where('sender_profile_id', $id)->count();
         $activeTab = 'Add Friends';
         $num_posts = Post::with('comments.profile')->where('profile_id', $id)->count();
-        return view('site.profile.Friendes.addSend', compact('all_friends_adds', 'num_of_frinds_add', 'activeTab','num_posts'));
+        return view('site.profile.Friendes.addSend', compact('all_friends_adds', 'num_of_frinds_add', 'activeTab', 'num_posts'));
     }
 
 
