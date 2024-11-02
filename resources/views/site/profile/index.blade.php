@@ -3,8 +3,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>  
-
     <style type="text/css">
         .img-fluid {
             max-width: 100%;
@@ -499,6 +497,28 @@
                                                     <span class="text-dark fw-semibold">{{ $post->likes()->count() }}
                                                         Likes</span>
                                                 </a>
+                                                <div class="modal fade" id="likesModal" tabindex="-1" role="dialog"
+                                                    aria-labelledby="likesModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="likesModalLabel">الإعجابات
+                                                                </h5>
+                                                                <button type="button" class="close"
+                                                                    data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <!-- سيتم ملء محتوى هذه المنطقة من خلال JavaScript -->
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-dismiss="modal">إغلاق</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             <div class="d-flex align-items-center gap-2 ms-4">
@@ -905,26 +925,43 @@
                     });
             }
         </script>
-
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        {{-- 
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
         <script>
-            $(document).on('click', '.like-link', function() {
-                var postId = $(this).data('id');
-                var userId = '{{ $user_name->profile->id }}';
+            $(document).ready(function() {
+                        $(document).on('click', '.like-link', function() {
+                            var postId = $(this).data('id');
+                            var userId = '{{ $user_name->profile->id }}';
 
-                $.ajax({
-                    url: '{{ url('/profile') }}/' + userId + '/' + postId,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        // هنا يمكنك عرض المعلومات كما تريد  
-                        console.log(data);
-                        alert(JSON.stringify(data)); // عرض البيانات كـ JSON  
-                    },
-                    error: function(xhr) {
-                        console.error('Error occurred:', xhr);
-                    }
-                });
-            });
+                            var url = '{{ route('post.react', '') }}' + '/' + postId;
+                            console.log(url);
+                        }
+
+                            //     $.ajax({
+                            //         url: url,
+                            //         type: 'GET',
+                            //         dataType: 'json',
+                            //         success: function(data) {
+                            //             console.log(data);
+                            //             var likesList = '';
+                            //             if (data.length > 0) {
+                            //                 likesList += '<h4>الأشخاص الذين أعجبوا بالمنشور:</h4>';
+                            //                 likesList += '<ul>';
+                            //                 data.forEach(function(like) {
+                            //                     likesList += '<li>' + like.profile.name + '</li>';
+                            //                 });
+                            //                 likesList += '</ul>';
+                            //             } else {
+                            //                 likesList = '<p>لا يوجد أي إعجابات بعد.</p>';
+                            //             }
+                            //             $('#likesModal .modal-body').html(likesList);
+                            //             $('#likesModal').modal('show');
+                            //         },
+                            //         error: function(xhr) {
+                            //             console.error('Error occurred:', xhr);
+                            //         }
+                            //     });
+                            // });
+                        });
         </script>
     @endsection

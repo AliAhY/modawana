@@ -39,25 +39,7 @@ class ProfileController extends Controller
         $num_of_frind = Friend::where('profile_id', $id)->count();
         $activeTab = 'Profile';
 
-        $post = null;
-        $likes = [];
-
-        // التحقق مما إذا كان هناك post_id  
-        if ($post_id) {
-            $post = Post::with('likes.profile')->where('id', $post_id)->first();
-
-            // إذا كان المنشور موجودًا، احصل على الأشخاص الذين قاموا بعمل "لايك"  
-            if ($post) {
-                $likes = $post->likes()->with('profile')->get();
-            }
-        }
-
-        // التحقق مما إذا كان الطلب AJAX  
-        if (request()->wantsJson()) {
-            return response()->json($likes);
-        }
-
-        return view('site.profile.index', compact('user_name', 'activeTab', 'posts', 'num_posts', 'img_posts', 'num_of_frind', 'post', 'likes'));
+        return view('site.profile.index', compact('user_name', 'activeTab', 'posts', 'num_posts', 'img_posts', 'num_of_frind'));
     }
 
     public function edit_profile_form($id)

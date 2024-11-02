@@ -15,6 +15,8 @@
     <script src="{{ asset('filepond/filepond.min.js') }}"></script>
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
     <style>
         /* html,
@@ -211,7 +213,7 @@
 
             // Resize main content based on sidebar visibility  
             mainContent.style.marginLeft = isHidden ? '60px' :
-            '150px'; // Adjust this value based on sidebar width  
+                '150px'; // Adjust this value based on sidebar width  
         });
     </script>
 </body>
