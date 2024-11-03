@@ -481,16 +481,6 @@
                                                     <i class="fa fa-thumbs-up"
                                                         style="font-size: 1.2em; color: {{ $post->likes()->where('profile_id', Auth::user()->profile->id)->exists()? 'white': 'blue' }};"></i>
                                                 </button>
-                                                {{-- <a href="{{ route('user.profile', $post->id) }}"> --}}
-                                                {{-- <a href="{{ route('user.profile', ['id' => $user_name->profile->id, 'post_id' => $post->id]) }}"> --}}
-                                                {{-- <a
-                                                    href="{{ route('user.profile', [
-                                                        'id' => $user_name->profile->id,
-                                                        'post_id' => isset($post->id) ? $post->id : null,
-                                                    ]) }}">
-
-                                                    <span class="text-dark fw-semibold">{{ $post->likes()->count() }}
-                                                        Likes</span></a> --}}
 
                                                 <a href="javascript:void(0);" class="like-link"
                                                     data-id="{{ $post->id }}">
@@ -924,44 +914,5 @@
                         console.error('There was a problem with the fetch operation:', error);
                     });
             }
-        </script>
-        {{-- 
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
-        <script>
-            $(document).ready(function() {
-                        $(document).on('click', '.like-link', function() {
-                            var postId = $(this).data('id');
-                            var userId = '{{ $user_name->profile->id }}';
-
-                            var url = '{{ route('post.react', '') }}' + '/' + postId;
-                            console.log(url);
-                        }
-
-                            //     $.ajax({
-                            //         url: url,
-                            //         type: 'GET',
-                            //         dataType: 'json',
-                            //         success: function(data) {
-                            //             console.log(data);
-                            //             var likesList = '';
-                            //             if (data.length > 0) {
-                            //                 likesList += '<h4>الأشخاص الذين أعجبوا بالمنشور:</h4>';
-                            //                 likesList += '<ul>';
-                            //                 data.forEach(function(like) {
-                            //                     likesList += '<li>' + like.profile.name + '</li>';
-                            //                 });
-                            //                 likesList += '</ul>';
-                            //             } else {
-                            //                 likesList = '<p>لا يوجد أي إعجابات بعد.</p>';
-                            //             }
-                            //             $('#likesModal .modal-body').html(likesList);
-                            //             $('#likesModal').modal('show');
-                            //         },
-                            //         error: function(xhr) {
-                            //             console.error('Error occurred:', xhr);
-                            //         }
-                            //     });
-                            // });
-                        });
         </script>
     @endsection

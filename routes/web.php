@@ -70,6 +70,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/posts/{post}/toggle-like', [PostController::class, 'toggleLike'])->name('posts.toggleLike');
 
     Route::post('/posts/reports/{id}', [ReportController::class, 'store'])->name('reports.store');
-    Route::get('/posts/post_react/{id}', [PostController::class, 'store'])->name('post.react');
 
 });

@@ -157,21 +157,4 @@ class PostController extends Controller
         return response()->json(['success' => 'تم حذف التعليق بنجاح.']);
     }
 
-    public function profile_react($id)
-    {
-        // التحقق مما إذا كان هناك post_id  
-        if ($id) {
-            $post = Post::with('likes.profile')->where('id', $id)->first();
-
-            // إذا كان المنشور موجودًا، احصل على الأشخاص الذين قاموا بعمل "لايك"  
-            if ($post) {
-                $likes = $post->likes()->with('profile')->get();
-                // إعادة استجابة JSON مع بيانات الإعجابات  
-                return response()->json($likes);
-            }
-        }
-
-        // إذا لم يوجد أي منشور، إعادة استجابة فارغة أو برسالة خطأ  
-        return response()->json([]);
-    }
 }

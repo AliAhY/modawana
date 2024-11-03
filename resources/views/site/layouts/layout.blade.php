@@ -15,8 +15,6 @@
     <script src="{{ asset('filepond/filepond.min.js') }}"></script>
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 
     <style>
         /* html,
@@ -42,18 +40,22 @@
 
         }
 
-        .sidebar {
-            width: 150px;
-            background-color: rgba(195, 190, 189, 0.511);
-            border-right: 1px solid #ddd;
-            transition: width 0.3s;
-        }
-
         .main-content {
             flex: 1;
             padding: 15px;
             transition: margin-left 0.3s;
         }
+
+        .sidebar {
+            width: 190px;
+            background-color: rgba(195, 190, 189, 0.511);
+            border-right: 1px solid #ddd;
+            transition: width 0.3s;
+            padding: 10px;
+            /* لتوفير بعض الفراغ داخل الشريط الجانبي */
+
+        }
+
 
         .sidebar.hidden {
             width: 60px;
@@ -73,16 +75,38 @@
             /* Adjust height as needed */
         }
 
+        .nav {
+            list-style: none;
+            /* إزالة النقط من القائمة */
+            padding: 0;
+            /* إزالة التباعد الافتراضي */
+            margin: 0;
+            /* إزالة الهامش الافتراضي */
+        }
+
         .nav-item {
-            display: flex;
             align-items: center;
             justify-content: center;
+            width: 100%
         }
 
         .nav-text {
-            display: block;
+            text-align: start;
             transition: opacity 0.3s;
             opacity: 1;
+            margin-left: 10px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            /* لمحاذاة الأيقونة والنص */
+            /* padding: 10px; */
+            /* يمكنك ضبط هذا مثل ما تراه مناسباً */
+            text-decoration: none;
+            /* لإزالة التسطير من الروابط */
+            color: inherit;
+            /* وراثة اللون من المكون الأب */
         }
 
         .sidebar.hidden .nav-text {
@@ -148,7 +172,7 @@
         @endif
     </nav>
 
-    <div class="aaa" style="background-color: background-color: rgba(195, 190, 189, 0.511)">
+    <div class="aaa" style="background-color: rgba(195, 190, 189, 0.511)">
         <div class="sidebar" id="sidebar">
             <button id="toggle-sidebar" class="btn btn-light" style="width: 100%;">☰</button>
             <ul class="nav flex-column">
@@ -160,20 +184,20 @@
                 </li>
                 <li class="nav-item">
                     <a href="{{ url('/') }}" class="nav-link">
-                        <span class="nav-text">مساعدة</span>
                         <i class="fas fa-help"></i>
+                        <span class="nav-text">مساعدة</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('logout') }}" class="nav-link">
                         <i class="fas fa-sign-out-alt"></i>
-                        <span class="nav-text">تسجيل الخروج</span>
+                        <span class="nav-text">الخروج</span>
                     </a>
                 </li>
             </ul>
         </div>
 
-        <div style="width: 100%;background-color: rgba(195, 190, 189, 0.511)">
+        <div style="width: 100%; background-color: rgba(195, 190, 189, 0.511)">
             @yield('main')
         </div>
     </div>
