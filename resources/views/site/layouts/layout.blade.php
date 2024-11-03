@@ -3,209 +3,132 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>الرئيسية</title>
 
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/swiper-bundle.min.css') }}">
     <link rel="stylesheet" href="{{ asset('fontawesome/css/all.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/site.css') }}">
+    {{-- ايقونات اضافة ازالة...صديق --}}
     <link rel="stylesheet" href="{{ asset('css/all.min.css') }}">
+    {{-- ---------------------------- --}}
     <link rel="stylesheet" href="{{ asset('filepond/filepond.min.css') }}">
 
     <script src="{{ asset('filepond/filepond.min.js') }}"></script>
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('js/swiper-bundle.min.js') }}"></script>
+    @yield('cssAndJs')
 
-    <style>
-        /* html,
-        body {
-
-            background-color: rgba(195, 190, 189, 0.511);
-        } */
-
-        .profile-photo1 {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            margin-left: 15px;
-        }
-
-        .aaa {
-            display: flex;
-            min-height: 100vh;
-            /* width: 100%; */
-
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 15px;
-            transition: margin-left 0.3s;
-        }
-
-        .sidebar {
-            width: 190px;
-            background-color: rgba(195, 190, 189, 0.511);
-            border-right: 1px solid #ddd;
-            transition: width 0.3s;
-            padding: 10px;
-            /* لتوفير بعض الفراغ داخل الشريط الجانبي */
-
-        }
-
-
-        .sidebar.hidden {
-            width: 60px;
-        }
-
-        .sidebar.hidden~.main-content {
-            margin-left: 60px;
-            /* Adjust this value to match the width of the hidden sidebar */
-        }
-
-        .sidebar-icon {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 40px;
-            /* Adjust height as needed */
-        }
-
-        .nav {
-            list-style: none;
-            /* إزالة النقط من القائمة */
-            padding: 0;
-            /* إزالة التباعد الافتراضي */
-            margin: 0;
-            /* إزالة الهامش الافتراضي */
-        }
-
-        .nav-item {
-            align-items: center;
-            justify-content: center;
-            width: 100%
-        }
-
-        .nav-text {
-            text-align: start;
-            transition: opacity 0.3s;
-            opacity: 1;
-            margin-left: 10px;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            /* لمحاذاة الأيقونة والنص */
-            /* padding: 10px; */
-            /* يمكنك ضبط هذا مثل ما تراه مناسباً */
-            text-decoration: none;
-            /* لإزالة التسطير من الروابط */
-            color: inherit;
-            /* وراثة اللون من المكون الأب */
-        }
-
-        .sidebar.hidden .nav-text {
-            opacity: 0;
-            pointer-events: none;
-            /* Prevent mouse events on hidden text */
-        }
-
-        .search-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            margin-top: 20px;
-        }
-
-        .search-container input {
-            width: 300px;
-            margin-bottom: 10px;
-        }
-
-        .footer-content {
-            position: relative;
-            bottom: 0;
-            width: 100%;
-        }
-    </style>
 </head>
+<style>
+    .profile-photo1 {
+        width: 60px;
+        /* عرض ثابت */
+        height: 60px;
+        /* طول ثابت */
+        border-radius: 50%;
+        /* دائري */
+        object-fit: cover;
+        /* يضمن أن الصورة تغطي المساحة */
+        margin-bottom: 15px;
+    }
+</style>
 
-<body style="background-color: rgba(195, 190, 189, 0.511)">
-    <nav class="navbar navbar-expand-lg navbar-light" style=" rgba(195, 190, 189, 0.511)">
+<body>
+
+
+    <nav class="navbar navbar-expand-lg navbar-light  navbar-fixed"
+        style="background-color: rgba(195, 190, 189, 0.511)">
         <a class="navbar-brand" href="{{ url('/') }}">
+            {{-- @dd($user_name) --}}
             @if (isset($user_name) && isset($user_name->profile) && $user_name->profile->avatar !== null)
                 @php
+                    // تحليل قيمة avatar (JSON) لاسترداد اسم الملف
                     $avatarData = json_decode($user_name->profile->avatar);
-                    $filename = $avatarData->filename ?? null;
+                    $filename = $avatarData->filename ?? null; // التأكد من وجود البيانات
                 @endphp
-                <img src="{{ $filename ? url('/storage/media/users/User_ID_' . $user_name->profile->user_id . '/images/profile/' . $filename) : asset($user_name->gender == 'male' ? 'images/avatar6.png' : 'images/avatar3.png') }}"
-                    alt="Avatar Photo" class="profile-photo1">
-            @endif
-        </a>
 
-        <form class="d-flex mx-auto">
-            <div class="search-container" style="position: relative;">
-                <input type="search" class="form-control" placeholder="ابحث هنا" aria-label="Search">
-                <div id="searchResults" style="width: 300px; position: absolute; z-index: 1000;"></div>
-            </div>
-        </form>
-
-        @if (Auth::check())
-            <ul class="navbar-nav ml-auto" style="margin-right: 30px">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                @if ($filename)
+                    <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id . '/images/profile/' . $filename) }}"
+                        alt="Avatar Photo" class="profile-photo1">
+                    <a href="{{ route('user.profile', Auth::user()->id) }}" class="nav-link">
                         {{ Auth::user()->name }}
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="{{ route('user.profile', Auth::user()->id) }}">الملف الشخصي</a>
-                        <a class="dropdown-item" href="{{ route('logout') }}">تسجيل الخروج</a>
-                    </div>
+                @else
+                    @if ($user_name->gender == 'male')
+                        <img src="{{ asset('images/avatar6.png') }}" alt class="w-100 h-100">
+                        <a href="{{ route('user.profile', Auth::user()->id) }}" class="nav-link">
+                            {{ Auth::user()->name }}
+                        </a>
+                    @else
+                        <img src="{{ asset('images/avatar3.png') }}" alt class="w-100 h-100">
+                        <a href="{{ route('user.profile', Auth::user()->id) }}" class="nav-link">
+                            {{ Auth::user()->name }}
+                        </a>
+                    @endif
+                @endif
+            @else
+                {{-- لا تظهر الصورة إذا كان المستخدم غير مسجل أو ليس له صورة شخصية --}}
+            @endif
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="تبديل التنقل">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+            </ul>
+        </div>
+
+        <form class="d-flex">
+            <div class="search-container" style="position: relative;">
+                <input type="search" class="form-control me-4" id="search" style="width: 300px;"
+                    placeholder="بحث...">
+                <div id="searchResults" style="width: 300px"></div>
+            </div>
+
+        </form>
+        @if (Auth::check())
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item mx-3">
+                    <a href="{{ route('user.profile', Auth::user()->id) }}" class="nav-link">
+                        {{ Auth::user()->name }}
+                    </a>
+                </li>
+                <li class="nav-item mx-3">
+                    <a href="{{ route('index.profiles') }}" class="nav-link">
+                        All Profils
+                    </a>
+                </li>
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="{{ route('logout') }}">Logout</a>
+                </li>
+            </ul>
+        @else
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="{{ url('/register') }}">Sign up</a>
+                </li>
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="{{ url('/login') }}">Login</a>
                 </li>
             </ul>
         @endif
     </nav>
 
-    <div class="aaa" style="background-color: rgba(195, 190, 189, 0.511)">
-        <div class="sidebar" id="sidebar">
-            <button id="toggle-sidebar" class="btn btn-light" style="width: 100%;">☰</button>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a href="{{ url('/') }}" class="nav-link">
-                        <i class="fas fa-home"></i>
-                        <span class="nav-text">الرئيسية</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url('/') }}" class="nav-link">
-                        <i class="fas fa-help"></i>
-                        <span class="nav-text">مساعدة</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('logout') }}" class="nav-link">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span class="nav-text">الخروج</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-
-        <div style="width: 100%; background-color: rgba(195, 190, 189, 0.511)">
-            @yield('main')
-        </div>
+    <div class="p-2">
+        @yield('main')
     </div>
 
-    <div class="footer-content" style="background-color: rgba(195, 190, 189, 0.995);">
+
+    <div class="footer-content " style="background-color: rgba(195, 190, 189, 0.995)">
         <div class="row">
             <div class="col-12 col-md-6">
-                <p>&copy; 2024YTP. جميع الحقوق محفوظة.</p>
+                <p>&copy; 2023 YTP. جميع الحقوق محفوظة.</p>
             </div>
             <div class="col-12 col-md-6 footer-right text-right">
                 <a href="https://www.facebook.com/yourprofile" target="_blank">
@@ -216,30 +139,12 @@
                 </a>
                 <a href="https://www.instagram.com/yourprofile" target="_blank" style="text-decoration: none">
                     <i class="fab fa-instagram-square mx-2" aria-hidden="true"
-                        style="background-color: rgb(129, 127, 123)"></i>
+                        style="background-color: rgb(243, 173, 61)"></i>
                 </a>
             </div>
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <script>
-        document.getElementById('toggle-sidebar').addEventListener('click', function() {
-            const sidebar = document.getElementById('sidebar');
-            const mainContent = document.querySelector('.main-content');
-
-            sidebar.classList.toggle('hidden'); // تفعيل/إلغاء تفعيل فئة hidden  
-
-            const isHidden = sidebar.classList.contains('hidden');
-
-            // Resize main content based on sidebar visibility  
-            mainContent.style.marginLeft = isHidden ? '60px' :
-                '150px'; // Adjust this value based on sidebar width  
-        });
-    </script>
 </body>
 
 </html>

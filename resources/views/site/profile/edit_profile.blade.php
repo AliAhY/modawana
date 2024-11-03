@@ -94,8 +94,8 @@
                 <div class="card-body text-center">
                     <div id="profile-preview">
                         @if ($user_profile->avatar == null)
-                            <img src="https://via.placeholder.com/300x300" class="profile-photo rounded-circle"
-                                alt="Profile Photo">
+                            <img src="{{ asset('images/300x300.png') }}" class="profile-photo rounded-circle"
+                                alt="Profile Image">
                         @else
                             @php
                                 // تحليل قيمة avatar (JSON) لاسترداد اسم الملف
@@ -105,10 +105,10 @@
 
                             @if ($filename)
                                 <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id . '/images/profile/' . $filename) }}"
-                                    class="profile-photo" alt="Profile Photo">
+                                    class="profile-photo" alt="Profile Image">
                             @else
                                 <img src="{{ asset('images/300x300.png') }}" class="profile-photo rounded-circle"
-                                    alt="Profile Photo">
+                                    alt="Profile Image">
                             @endif
                         @endif
                     </div>
@@ -121,7 +121,7 @@
                 <div class="card-body text-center">
                     <div id="cover-preview">
                         @if ($user_profile->cover_image == null)
-                            <img src="https://via.placeholder.com/300x300" class="cover-photo" alt="Profile Photo">
+                            <img src="{{ asset('images/300x300.png') }}" class="cover-photo" alt="Cover image">
                         @else
                             @php
                                 // تحليل قيمة avatar (JSON) لاسترداد اسم الملف
@@ -133,7 +133,7 @@
                                 <img src="{{ url('/storage/media/users/User_ID_' . $user_name->profile->user_id .  '/images/cover/' . $filename) }}"
                                     class="cover-photo" alt="Profile Photo">
                             @else
-                                <img src="https://via.placeholder.com/300x300" class="cover-photo" alt="Profile Photo">
+                                <img src="{{ asset('images/300x300.png') }}" class="cover-photo" alt="Profile Photo">
                             @endif
                         @endif
                     </div>
